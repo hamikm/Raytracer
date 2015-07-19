@@ -1,0 +1,9 @@
+docs/
+.project
+.cproject
+.settings/
+*.o
+*~
+raytracer
+draytracer
+unittests
