@@ -8,6 +8,7 @@
 #include "light.hh"
 #include "shape.hh"
 #include "camera.hh"
+#include "boost/shared_ptr.hpp"
 #include <cassert>
 #include <vector>
 #include <iostream>
@@ -49,14 +50,26 @@ class scene {
 private:
 
 	/**
+	 * Boost shared pointer typedef for lights. This is generic unlike the
+	 * typedefs in the light header file.
+	 */
+	typedef boost::shared_ptr<light<vec_T, color_T, time_T, dim> > sp_light;
+
+	/**
+	 * Boost shared pointer typedef for shapes. This is generic unlike the
+	 * typedefs in the light header file.
+	 */
+	typedef boost::shared_ptr<shape<vec_T, color_T, time_T, dim> > sp_shape;
+
+	/**
 	 * An STL vector of pointers to all the lights in the scene.
 	 */
-	std::vector<light<vec_T, color_T, time_T, dim> * > lights;
+	std::vector<sp_light> lights;
 
 	/**
 	 * An STL vector of pointers to all the shapes in the scene.
 	 */
-	std::vector<shape<vec_T, color_T, time_T, dim> * > shapes;
+	std::vector<sp_shape> shapes;
 
 public:
 
@@ -73,6 +86,8 @@ public:
 	 *   @c addShape are not deleted before or after this destructor runs.
 	 */
 	~scene() {
+
+		/* TODO remove?
 		typename std::vector<light<vec_T, color_T, time_T, dim> * >::iterator
 			iter;
 		for (iter = lights.begin(); iter < lights.end(); iter++) {
@@ -84,26 +99,25 @@ public:
 		for (iter2 = shapes.begin(); iter2 < shapes.end(); iter2++) {
 			delete *iter2;
 		}
+		*/
 	}
 
 	/**
-	 * Adds an object to the scene. Assumes it was heap-allocated before
-	 * invocation of this function.
+	 * Adds a shape to the scene.
 	 *
-	 * @param obj The shape to add to this scene.
+	 * @param obj Boost shared pointer to a shape to add to this scene.
 	 */
-	void addShape(shape<vec_T, color_T, time_T, dim> *obj) {
+	void addShape(sp_shape obj) {
 		assert(obj != 0);
 		shapes.push_back(obj);
 	}
 
 	/**
-	 * Adds a light to the scene. Assumes it was heap-allocated before
-	 * function invocation.
+	 * Adds a light to the scene.
 	 *
-	 * @param theLight The light to add to this scene.
+	 * @param theLight Boose shared pointer to the light to add to this scene.
 	 */
-	void addLight(light<vec_T, color_T, time_T, dim> *theLight) {
+	void addLight(sp_light theLight) {
 		assert(theLight != 0);
 		lights.push_back(theLight);
 	}
@@ -121,14 +135,12 @@ public:
 	 *
 	 * @return The nearest object that intersects the ray @c r.
 	 */
-	shape<vec_T, color_T, time_T, dim> * findClosestShape(
+	sp_shape findClosestShape(
 			const ray<vec_T, time_T, dim> &r, time_T &tIntersect) const {
 		time_T t = RAY_MISS;
 		tIntersect = RAY_MISS;
-		shape<vec_T, color_T, time_T, dim> *intersectedObjPtr = 0, *tmpPtr;
-		typename
-			std::vector<shape<vec_T, color_T, time_T, dim> * >::const_iterator
-			iter;
+		sp_shape intersectedObjPtr, tmpPtr;
+		typename std::vector<sp_shape>::const_iterator iter;
 		for (iter = shapes.begin(); iter < shapes.end(); iter++) {
 			tmpPtr = *iter;
 			t = tmpPtr->intersection(r);
@@ -158,7 +170,7 @@ public:
 	 */
 	rgbcolor<color_T> traceRay(const ray<vec_T, time_T, dim> &r) const {
 		time_T tIntersect; // out parameter
-		shape<vec_T, color_T, time_T, dim> *intersectedObjPtr =
+		sp_shape intersectedObjPtr =
 				findClosestShape(r, tIntersect);
 		if(intersectedObjPtr == 0) {
 			return DEFAULT_BKCOLOR;
@@ -167,12 +179,10 @@ public:
 		// Loop over all the lights, summing the color contributions from
 		// each one
 		rgbcolor<color_T> finalColor;
-		typename
-			std::vector<light<vec_T, color_T, time_T, dim> * >::const_iterator
-			iter;
+		typename std::vector<sp_light>::const_iterator iter;
 		for (iter = lights.begin(); iter < lights.end(); iter++) {
 			mvector<vec_T, dim> intersectionPt = r.getPointAtT(tIntersect);
-			light<vec_T, color_T, time_T, dim> *currLightPtr = *iter;
+			sp_light currLightPtr = *iter;
 			mvector<vec_T, dim> L = currLightPtr->getPos() - intersectionPt;
 			L = L.norm();
 			mvector<vec_T, dim> N =
@@ -222,17 +232,13 @@ public:
 	void printHelper(std::ostream &os) const {
 		os << "scene:" << std::endl;
 		os << "  lights:" << std::endl;
-		typename
-			std::vector<light<vec_T, color_T, time_T, dim> * >::const_iterator
-			iter;
+		typename std::vector<sp_light>::const_iterator iter;
 		for (iter = lights.begin(); iter < lights.end(); iter++) {
 			os << "    " << **iter << std::endl;
 		}
 
 		os << "  shapes:" << std::endl;
-		typename
-			std::vector<shape<vec_T, color_T, time_T, dim> * >::const_iterator
-			iter2;
+		typename std::vector<sp_shape>::const_iterator iter2;
 		for (iter2 = shapes.begin(); iter2 < shapes.end(); iter2++) {
 			os << "    " << **iter2 << std::endl;
 		}
