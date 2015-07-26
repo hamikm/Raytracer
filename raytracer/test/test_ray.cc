@@ -8,6 +8,9 @@
 #include "gtest/gtest.h"
 #include <sstream>
 
+#ifndef TEST_RAY_CC
+#define TEST_RAY_CC
+
 /**
  * This test fixture class sets up a few persistent rays that we use
  * below for testing. Note that an object of this class is created before
@@ -141,3 +144,5 @@ TEST_F(RayTest, Print) {
 	t.getline(cstring2, 100);
 	ASSERT_STREQ("start: (0, 5)\tdirection: (0, -2)", cstring2);
 }
+
+#endif // TEST_RAY_CC

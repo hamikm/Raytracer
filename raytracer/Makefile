@@ -1,50 +1,82 @@
 CXX_FLAGS = -Wall
 
-SOURCE_DIR = src
+SRC_DIR = src
+TST_DIR = test
+GT_DIR = gtest-1.5.0
 
-TEST_DIR = test
+# Relative filenames.
+SRC_RFILES = driver.cc sceneobj.hh rgbcolor.hh mvector.hh ray.hh scene.hh \
+ light.hh shape.hh camera.hh infplane.hh sphere.hh
 
-RELEASE_BIN = release_bin
+# Absolute filenames.
+SRC_AFILES = $(addprefix $(SRC_DIR)/,$(SRC_RFILES))
 
-TEST_BIN = test_bin
+# Relative test driver and unit test filenames.
+TST_RFILES = alltests.cc test_light.cc test_ray.cc test_scene.cc \
+test_infplane.cc test_mvector.cc test_rgbcolor.cc test_sphere.cc
 
-GTEST_DIR = gtest-1.5.0
+# Absolute test driver and unit test filenames.
+TST_AFILES = $(addprefix $(TST_DIR)/,$(TST_RFILES))
 
-GTEST_MAKE_DIR = $(GTEST_DIR)/make
+# Name of test image that is produced from PPM image of test scene.
+IMG_NAME = img.png
 
-RT_OBJS = driver.o
+# Name of gtest object file that we need to link with unit tests.
+GT_OBJ = gtest-all.o
 
-TEST_OBJS = alltests.o
+# Makes the raytracer binary.
+rt: $(SRC_DIR)/driver.o
+	$(CXX) $(CXX_FLAGS) $(CPP_FLAGS) $(SRC_DIR)/driver.o -o rt
 
-raytracer: $(RT_OBJS)
-	$(CXX) $(CPP_FLAGS) $(CXX_FLAGS) $(RT_OBJS) -o raytracer
+# Views the test image with Eye of Gnome.
+view: $(IMG_NAME)
+	eog $(IMG_NAME)
 
-all: raytracer draytracer unittests docs
+# Makes test image. Pipes PPM image to PNG converter, outputs to test image.
+$(IMG_NAME): rt
+	./rt | pnmtopng > $(IMG_NAME)
+
+# Makes debugging enabled raytracer binary.
+drt: $(SRC_DIR)/driver.o
+	$(CXX) $(CXX_FLAGS) $(CPP_FLAGS) -g $(SRC_DIR)/driver.o -o drt
+
+$(SRC_DIR)/driver.o:
+	$(CXX) $(CXX_FLAGS) $(CPP_FLAGS) -c $(SRC_DIR)/driver.cc \
+	-o $(SRC_DIR)/driver.o
+
+# Makes the unit tests binary.
+unit_tests: $(TST_DIR)/alltests.o $(GT_DIR)/make/$(GT_OBJ)
+	$(CXX) $(CXX_FLAGS) $(CPP_FLAGS) $(GT_DIR)/make/$(GT_OBJ) \
+	$(TST_DIR)/alltests.o -lpthread -o unit_tests
+
+$(TST_DIR)/alltests.o: $(TST_AFILES)
+	$(CXX) $(CXX_FLAGS) $(CPP_FLAGS) -I$(SRC_DIR) -I$(TST_DIR) \
+	-I$(GT_DIR)/include -c $(TST_DIR)/alltests.cc -o $(TST_DIR)/alltests.o
+
+# Makes the gtest object file that must be linked to the unit tests.
+$(GT_DIR)/make/$(GT_OBJ):
+	make -C $(GT_DIR)/make
+
+.PHONY: clean
+
+clean:
+	rm -rf *~ *.o rt drt unit_tests docs $(IMG_NAME) $(TST_DIR)/*.o \
+	$(TST_DIR)/*~ $(SRC_DIR)/*~ $(SRC_DIR)/*.o
+	make clean -C $(GT_DIR)/make
 
 docs:
 	doxygen
 
-# for debugging. It has the -g flag. test is for unit tests
-draytracer: $(RT_OBJS)
-	$(CXX) $(CPP_FLAGS) $(CXX_FLAGS) -g $(RT_OBJS) -o draytracer 
+depend:
+	makedepend $(CXX_FLAGS) $(CPP_FLAGS) -Y $(SRC_DIR)/driver.cc \
+	$(TST_DIR)/alltests.cc
+# DO NOT DELETE
 
-unittests: $(GTEST_OBJS) $(TEST_OBJS)
-	$(CXX) $(CPP_FLAGS) $(CXX_FLAGS) -g \
-	$(TEST_OBJS) $(GTEST_MAKE_DIR)/gtest-all.o -lpthread -o unittests
-	
-%.o: $(SOURCE_DIR)/%.cc
-	$(CXX) $(CPP_FLAGS) $(CXX_FLAGS) -c $< -o $@
-	
-%.o: $(TEST_DIR)/%.cc
-	$(CXX) $(CPP_FLAGS) $(CXX_FLAGS) -I$(GTEST_DIR)/include -Isrc -c $< -o $@
-	
-gtest-all.o:
-	make -C $(GTEST_MAKE_DIR)
-
-clean:
-	rm -rf docs raytracer draytracer unittests *~ *.o
-
-clean_crap:
-	rm -rf *~ *.o
-
-.PHONY: clean clean_crap
+src/driver.o: src/sceneobj.hh src/rgbcolor.hh src/mvector.hh src/ray.hh
+src/driver.o: src/scene.hh src/light.hh src/shape.hh src/camera.hh
+src/driver.o: src/infplane.hh src/sphere.hh
+test/alltests.o: test/test_light.cc src/light.hh src/sceneobj.hh
+test/alltests.o: src/rgbcolor.hh src/mvector.hh src/ray.hh test/test_ray.cc
+test/alltests.o: test/test_mvector.cc test/test_rgbcolor.cc
+test/alltests.o: test/test_infplane.cc src/infplane.hh src/shape.hh
+test/alltests.o: test/test_sphere.cc src/sphere.hh

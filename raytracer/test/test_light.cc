@@ -9,6 +9,9 @@
 #include "gtest/gtest.h"
 #include <sstream>
 
+#ifndef TEST_LIGHT_CC
+#define TEST_LIGHT_CC
+
 /**
  * This test fixture class sets up a couple of persistent lights that we use
  * below for testing. Note that an object of this class is created before
@@ -66,6 +69,7 @@ TEST_F(lightTest, NondefaultConstructor) {
 	double v1arr[] = {1, 0, 0};
 	vector3d v1(v1arr);
 	light3d c(c1, v1);
+
 	ASSERT_DOUBLE_EQ(1, c.getColor().getR());
 	ASSERT_DOUBLE_EQ(0.5, c.getColor().getG());
 	ASSERT_DOUBLE_EQ(0, c.getColor().getB());
@@ -132,3 +136,5 @@ TEST_F(lightTest, Print) {
 	ASSERT_STREQ("[scene object. color: (0.1, 0.3, 0.5)] ---> "
 			"[light. position: (1, 2, 3)]", cstring);
 }
+
+#endif // TEST_LIGHT_CC

@@ -7,6 +7,9 @@
 #include "gtest/gtest.h"
 #include <sstream>
 
+#ifndef TEST_RGBCOLOR_CC
+#define TEST_RGBCOLOR_CC
+
 /**
  * This test fixture class sets up a few persistent colors that we use
  * below for testing. Note that an object of this class is created before
@@ -261,3 +264,5 @@ TEST_F(rgbcolorTest, Print) {
 	s.getline(cstring, 100);
 	ASSERT_STREQ("(0.3, 0.7, 0.5)", cstring);
 }
+
+#endif // TEST_RGBCOLOR_CC

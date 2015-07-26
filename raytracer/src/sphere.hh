@@ -64,6 +64,7 @@ public:
 	sphere(const rgbcolor<color_T> &color,
 		  vec_T radius,
 		  const mvector<vec_T, dim> &theCenter) :
+			  // shape<vec_T, color_T, time_T, dim>(), TODO remove
 			  shape<vec_T, color_T, time_T, dim>(color),
 			  rad(radius),
 			  center(theCenter) { }

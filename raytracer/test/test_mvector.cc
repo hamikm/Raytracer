@@ -8,6 +8,9 @@
 #include <cmath>
 #include <sstream>
 
+#ifndef TEST_MVECTOR_CC
+#define TEST_MVECTOR_CC
+
 /**
  * This test fixture class sets up a few persistent vectors that we use
  * below for testing. Note that an object of this class is created before
@@ -340,3 +343,5 @@ TEST_F(mvectorTest, Print) {
 	s.getline(cstring, 100);
 	ASSERT_STREQ("(2, 0, 0)", cstring);
 }
+
+#endif // TEST_MVECTOR_CC

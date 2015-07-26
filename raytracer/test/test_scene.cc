@@ -14,6 +14,9 @@
 #include "gtest/gtest.h"
 #include <iostream>
 
+#ifndef TEST_SCENE_CC
+#define TEST_SCENE_CC
+
 /**
  * This test fixture class sets up a persistent scene that we use
  * below for testing. Note that an object of this class is created before
@@ -118,3 +121,5 @@ TEST_F(sceneTest, Print) {
 			"---> [infinite plane. dist from origin: 2, surface normal: "
 			"(0.267261, 0.534522, 0.801784)]", cstring);
 }
+
+#endif // TEST_SCENE_CC

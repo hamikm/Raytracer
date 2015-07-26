@@ -9,6 +9,9 @@
 #include <sstream>
 #include <cmath>
 
+#ifndef TEST_INFPLANE_CC
+#define TEST_INFPLANE_CC
+
 /**
  * This test fixture class sets up a couple of persistent planes that we use
  * below for testing. Note that an object of this class is created before
@@ -131,3 +134,5 @@ TEST_F(infplaneTest, Print) {
 			"[infinite plane. dist from origin: 0, surface normal: (0, 0, 1)]",
 			cstring);
 }
+
+#endif // TEST_INFPLANE_CC

@@ -9,6 +9,9 @@
 #include <sstream>
 #include <cmath>
 
+#ifndef TEST_SPHERE_CC
+#define TEST_SPHERE_CC
+
 /**
  * This test fixture class sets up a couple of persistent planes that we use
  * below for testing. Note that an object of this class is created before
@@ -163,3 +166,5 @@ TEST_F(sphereTest, Print) {
 	ASSERT_STREQ("[scene object. color: (0.4, 0.5, 0.6)] ---> [shape] ---> "
 			"[sphere. center: (1, 1, 0), radius: 1.41421]", cstring2);
 }
+
+#endif // TEST_SPHERE_CC
