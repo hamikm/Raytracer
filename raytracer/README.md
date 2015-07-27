@@ -1,8 +1,9 @@
 The easiest way to run is to type "make view". Make sure you have Eye of Gnome
 and the Boost libraries installed. On Ubuntu you can install them like this: 
   
-  sudo apt-get install eog
-  sudo apt-get install libboost-all-dev
+sudo apt-get install eog
+
+sudo apt-get install libboost-all-dev
   
 --------------------------------------------------------------------------------
 
