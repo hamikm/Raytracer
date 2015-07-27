@@ -6,6 +6,7 @@
 #include "rgbcolor.hh"
 #include "mvector.hh"
 #include "ray.hh"
+#include "boost/shared_ptr.hpp"
 #include <ostream>
 
 #ifndef SCENEOBJ_HH
@@ -140,5 +141,11 @@ typedef sceneobj<float, float, float, 3> sceneobj3f;
 typedef sceneobj<double, double, double, 2> sceneobj2d;
 typedef sceneobj<double, double, float, 2> sceneobj2ddf;
 typedef sceneobj<float, float, float, 2> sceneobj2f;
+typedef boost::shared_ptr<sceneobj<double, double, double, 3> > sp_sceneobj3d;
+typedef boost::shared_ptr<sceneobj<double, double, float, 3> > sp_sceneobj3ddf;
+typedef boost::shared_ptr<sceneobj<float, float, float, 3> > sp_sceneobj3f;
+typedef boost::shared_ptr<sceneobj<double, double, double, 2> > sp_sceneobj2d;
+typedef boost::shared_ptr<sceneobj<double, double, float, 2> > sp_sceneobj2ddf;
+typedef boost::shared_ptr<sceneobj<float, float, float, 2> > sp_sceneobj2f;
 
 #endif // SCENEOBJ_HH

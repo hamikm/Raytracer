@@ -265,4 +265,64 @@ TEST_F(rgbcolorTest, Print) {
 	ASSERT_STREQ("(0.3, 0.7, 0.5)", cstring);
 }
 
+/*
+ * Exercises the >> operator.
+ */
+TEST_F(rgbcolorTest, Input) {
+	// Test input of color with doubles.
+	std::string strvec = "(0.1, 0.2, 0.3)";
+	std::stringstream iss(strvec);
+	std::stringstream oss;
+	rgbcolord c_d;
+	iss >> c_d;
+	oss << c_d;
+	ASSERT_STREQ(iss.str().c_str(), oss.str().c_str());
+	ASSERT_EQ(strvec.length(), iss.tellg()); // assert input was consumed
+
+	// Test input of color with floats.
+	strvec = "(0.5, 0.4, 0.3)";
+	iss.str(strvec); // overwrite the stringstream with new contents
+	oss.str(""); // overwrite the stringstream with empty string
+	rgbcolorf c_f;
+	iss >> c_f;
+	oss << c_f;
+	ASSERT_STREQ(iss.str().c_str(), oss.str().c_str());
+	ASSERT_EQ(strvec.length(), iss.tellg()); // assert input was consumed
+
+	// Test that starting without ( doesn't consume input and no exception.
+	strvec = "<0.1, 0.2, 0.3)";
+	iss.str(strvec);
+	oss.str("");
+	iss >> c_d; // should do nothing. iss should be unmodified.
+	ASSERT_STREQ("", oss.str().c_str());
+	ASSERT_EQ(0, iss.tellg()); // assert NO INPUT was consumed
+
+	// Test that bad internal formatting causes exception.
+	strvec = "(0.2 , 0.2 0.2)"; // bad formatting... should throw exception
+	iss.str(strvec);
+	oss.str("");
+	ASSERT_THROW(iss >> c_d, std::ios_base::failure);
+	iss.clear(); // reset error flags
+
+	// Test that not ending with a > causes exception.
+	strvec = "(0.2, 0.2, 0.2>"; // bad formatting... should throw exception on input
+	iss.str(strvec);
+	oss.str("");
+	ASSERT_THROW(iss >> c_d, std::ios_base::failure);
+	iss.clear(); // reset error flags
+
+	// Test that whitespace is handled correctly.
+	strvec = "  (   0.5  , 0.4,0.5    )    f";
+	std::string real = "(0.5, 0.4, 0.5)";
+	iss.str(strvec); // overwrite the stringstream with new contents
+	oss.str(""); // overwrite the stringstream with empty string
+	iss >> c_d;
+	oss << c_d;
+	ASSERT_STREQ(real.c_str(), oss.str().c_str());
+	// Check that vector was consumed by checking if f is the next thing read.
+	char c;
+	iss >> c;
+	ASSERT_EQ('f', c);
+}
+
 #endif // TEST_RGBCOLOR_CC

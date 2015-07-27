@@ -122,7 +122,6 @@ public:
 		lights.push_back(theLight);
 	}
 
-
 	/**
 	 * Finds the closest object that intersects the given ray and the time
 	 * at which that intersection occurs, which is returned through the
@@ -202,18 +201,19 @@ public:
 	 * formatted image to the given output stream.
 	 *
 	 * @param cam The camera in this scene.
-	 * @param imgSize The width and height of the image.
+	 * @param width The width of the image in pixels.
+	 * @param height The height of the image in pixels.
 	 * @param os The output stream to which the PPM image will be written.
 	 */
 	void renderPPM(const camera<vec_T, time_T, dim> &cam,
-			int imgSize,
+			int width, int height,
 			std::ostream &os) const {
-		os << "P3 " << imgSize << " " << imgSize << " "
+		os << "P3 " << width << " " << height << " "
 				<< COLORMAX << std::endl;
-		for (int y = 0; y < imgSize; y++) {
-			for (int x = 0; x < imgSize; x++) {
+		for (int y = 0; y < height; y++) {
+			for (int x = 0; x < width; x++) {
 				ray<vec_T, time_T, dim> pixelRay = cam.getRayForPixel(
-						x, y, imgSize);
+						x, y, width, height);
 				rgbcolor<color_T> c = traceRay(pixelRay);
 				c *= COLORMAX;
 				c.clamp(0, COLORMAX);

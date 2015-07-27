@@ -13,6 +13,8 @@
 #include "infplane.hh"
 #include "gtest/gtest.h"
 #include <iostream>
+#include "boost/make_shared.hpp"
+#include "boost/pointer_cast.hpp"
 
 #ifndef TEST_SCENE_CC
 #define TEST_SCENE_CC
@@ -25,9 +27,9 @@
 class sceneTest : public ::testing::Test {
 protected:
 
-	scene3d *s;
-	light3d *a, *b;
-	shape3d *c, *d;
+	scene3d s;
+	sp_lightd a, b;
+	sp_shape3d c, d;
 
 	/**
 	 * Since we're passing pointers to the lights in the scene and pointers
@@ -37,33 +39,33 @@ protected:
 	 */
 	virtual void SetUp() {
 		rgbcolord c1(0.1, 0.3, 0.5);
-		double v1arr[] = {1, 2, 3};
-		vector3d v1(v1arr);
-		a = new light3d(c1, v1);
+		vector3d v1(1.0, 2.0, 3.0);
+		lightd l1(c1, v1);
+		a = boost::make_shared<lightd>(l1);
 
 		rgbcolord c2(0.2, 0.4, 0.6);
-		double v2arr[] = {4, 5, 6};
-		vector3d v2(v2arr);
-		b = new light3d(c2, v2);
+		vector3d v2(4.0, 5.0, 6.0);
+		lightd l2(c2, v2);
+		b = boost::make_shared<lightd>(l2);
 
-		double v3arr[] = {1, 3, 5};
-		vector3d v3(v3arr);
-		c = new sphere3d(c1, 2, v3);
+		vector3d v3(1.0, 3.0, 5.0);
+		sphere3d sp(c1, 2, v3);
+		c = boost::dynamic_pointer_cast<shape3d>(
+				boost::make_shared<sphere3d>(sp));
 
-		double v4arr[] = {2, 4, 6};
-		vector3d v4(v4arr);
-		d = new infplaned(c2, 2, v4);
+		vector3d v4(2.0, 4.0, 6.0);
+		infplaned p(c2, 2, v4);
+		d = boost::dynamic_pointer_cast<shape3d>(
+				boost::make_shared<infplaned>(p));
 
-		s = new scene3d();
-		s->addShape(c);
-		s->addShape(d);
-		s->addLight(a);
-		s->addLight(b);
+		s.addShape(c);
+		s.addShape(d);
+		s.addLight(a);
+		s.addLight(b);
 	}
 
 	virtual void TearDown() {
-		delete s; // Note that we only need to delete s because a, b, c, d
-		 	      // are automatically deleted by scene's destructor
+
 	}
 };
 
@@ -75,23 +77,23 @@ protected:
 TEST_F(sceneTest, FindClosestShape) {
 	ray3d r1(vector3d(1.0, 3.0, 10.0), vector3d(0.0, 0.0, -1.0));
 	double intersectionTime; // this is out parameter
-	s->findClosestShape(r1, intersectionTime);
+	s.findClosestShape(r1, intersectionTime);
 	ASSERT_DOUBLE_EQ(3, intersectionTime);
 
 	ray3d r2(vector3d(-2.0, 3.0, 5.0), vector3d(1.0, 0.0, 0.0));
-	s->findClosestShape(r2, intersectionTime);
+	s.findClosestShape(r2, intersectionTime);
 	ASSERT_DOUBLE_EQ(1, intersectionTime);
 }
 
 TEST_F(sceneTest, TraceRay) {
 	ray3d r1(vector3d(1.0, 3.0, 10.0), vector3d(0.0, 0.0, 1.0));
-	rgbcolord c1 = s->traceRay(r1);
+	rgbcolord c1 = s.traceRay(r1);
 	ASSERT_DOUBLE_EQ(0, c1.getR());
 	ASSERT_DOUBLE_EQ(0, c1.getG());
 	ASSERT_DOUBLE_EQ(0, c1.getB());
 
 	ray3d r2(vector3d(1.0, 3.0, -10.0), vector3d(0.0, 0.0, 1.0));
-	rgbcolord c2 = s->traceRay(r2);
+	rgbcolord c2 = s.traceRay(r2);
 	ASSERT_DOUBLE_EQ(0.051537615489350617, c2.getR());
 	ASSERT_DOUBLE_EQ(0.2352538705067326, c2.getG());
 	ASSERT_DOUBLE_EQ(0.55114876505214583, c2.getB());
@@ -99,7 +101,7 @@ TEST_F(sceneTest, TraceRay) {
 
 TEST_F(sceneTest, Print) {
 	std::stringstream str;
-	str << *s;
+	str << s;
 	char cstring[200];
 	str.getline(cstring, 200);
 	ASSERT_STREQ("scene:", cstring);
@@ -107,19 +109,19 @@ TEST_F(sceneTest, Print) {
 	ASSERT_STREQ("  lights:", cstring);
 	str.getline(cstring, 200);
 	ASSERT_STREQ("    [scene object. color: (0.1, 0.3, 0.5)] ---> "
-			"[light. position: (1, 2, 3)]", cstring);
+			"[light. position: <1, 2, 3>]", cstring);
 	str.getline(cstring, 200);
 		ASSERT_STREQ("    [scene object. color: (0.2, 0.4, 0.6)] ---> "
-				"[light. position: (4, 5, 6)]", cstring);
+				"[light. position: <4, 5, 6>]", cstring);
 	str.getline(cstring, 200);
 	ASSERT_STREQ("  shapes:", cstring);
 	str.getline(cstring, 200);
 	ASSERT_STREQ("    [scene object. color: (0.1, 0.3, 0.5)] ---> [shape] "
-			"---> [sphere. center: (1, 3, 5), radius: 2]", cstring);
+			"---> [sphere. center: <1, 3, 5>, radius: 2]", cstring);
 	str.getline(cstring, 200);
 	ASSERT_STREQ("    [scene object. color: (0.2, 0.4, 0.6)] ---> [shape] "
 			"---> [infinite plane. dist from origin: 2, surface normal: "
-			"(0.267261, 0.534522, 0.801784)]", cstring);
+			"<0.267261, 0.534522, 0.801784>]", cstring);
 }
 
 #endif // TEST_SCENE_CC

@@ -4,7 +4,7 @@
  */
 
 #include <cassert>
-#include <ostream>
+#include <iostream>
 
 #ifndef RGBCOLOR_HH
 #define RGBCOLOR_HH
@@ -316,6 +316,63 @@ template<typename T>
 std::ostream & operator<<(std::ostream &os, const rgbcolor<T> &color) {
 	color.print(os);
 	return os;
+}
+
+/**
+ * Makes the input operator compatible with input formatted like
+ * (r, g, b), where r, g, and b are colors and where
+ * whitespace doesn't matter.
+ *
+ * @param is The input stream from which to read.
+ * @param col The rgbcolor into which we'll read.
+ *
+ * @return The same input stream for operator chaining.
+ *
+ * @throw ios_base::failure If input doesn't conform to (r, g, b) format.
+ */
+template<typename T>
+std::istream & operator>>(std::istream& is, rgbcolor<T> &col) {
+
+	if(!is) { // If not ready...
+		return is; // ...already failed, just return.
+	}
+
+	// Configure istream to throw an exception if the failbit gets set below.
+	is.exceptions(std::ios_base::failbit);
+
+	// Otherwise get the first char.
+	char c;
+	is >> c;
+	if (c == '(') { // If it's the start of a color, then...
+
+		// Set red component.
+		T tmpcol;
+		is >> tmpcol >> c;
+		if (c != ',') { // If wasn't a comma after color, bad format.
+			is.clear(std::ios_base::failbit);
+		}
+		col.setR(tmpcol);
+
+		// Set green component.
+		is >> tmpcol >> c;
+		if (c != ',') { // If wasn't a comma after color, bad format.
+			is.clear(std::ios_base::failbit);
+		}
+		col.setG(tmpcol);
+
+		// Set red component.
+		is >> tmpcol >> c;
+		if (c != ')') { // If wasn't a comma after color, bad format.
+			is.clear(std::ios_base::failbit);
+		}
+		col.setB(tmpcol);
+	}
+	else { // If first char wasn't (, put it back into the stream and return.
+		is.putback(c);
+		return is;
+	}
+
+	return is;
 }
 
 typedef rgbcolor<float> rgbcolorf;

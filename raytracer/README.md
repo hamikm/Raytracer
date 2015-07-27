@@ -1,3 +1,11 @@
+The easiest way to run is to type "make view". Make sure you have Eye of Gnome
+and the Boost libraries installed. On Ubuntu you can install them like this: 
+  
+  sudo apt-get install eog
+  sudo apt-get install libboost-all-dev
+  
+--------------------------------------------------------------------------------
+
 This simple ray tracer was written for CS11 advanced C++ track in summer
 2015. Donnie decided to give me credit for it as long as I did all the
 work for labs one to seven and implemented the following: 
@@ -16,3 +24,4 @@ work for labs one to seven and implemented the following:
     
 The lab specifications have been uploaded to this project as a tarball in the
 root directory called labs.tar.gz.
+

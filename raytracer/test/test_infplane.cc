@@ -131,7 +131,7 @@ TEST_F(infplaneTest, Print) {
 	char cstring[200];
 	s.getline(cstring, 200);
 	ASSERT_STREQ("[scene object. color: (0.5, 0.5, 0.5)] ---> [shape] ---> "
-			"[infinite plane. dist from origin: 0, surface normal: (0, 0, 1)]",
+			"[infinite plane. dist from origin: 0, surface normal: <0, 0, 1>]",
 			cstring);
 }
 

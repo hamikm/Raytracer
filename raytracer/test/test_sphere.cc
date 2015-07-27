@@ -157,14 +157,14 @@ TEST_F(sphereTest, Print) {
 	char cstring[200];
 	s.getline(cstring, 200);
 	ASSERT_STREQ("[scene object. color: (0.5, 0.5, 0.5)] ---> [shape] ---> "
-			"[sphere. center: (0, 0, 0), radius: 1]", cstring);
+			"[sphere. center: <0, 0, 0>, radius: 1]", cstring);
 
 	std::stringstream t;
 	t << *c;
 	char cstring2[200];
 	t.getline(cstring2, 200);
 	ASSERT_STREQ("[scene object. color: (0.4, 0.5, 0.6)] ---> [shape] ---> "
-			"[sphere. center: (1, 1, 0), radius: 1.41421]", cstring2);
+			"[sphere. center: <1, 1, 0>, radius: 1.41421]", cstring2);
 }
 
 #endif // TEST_SPHERE_CC

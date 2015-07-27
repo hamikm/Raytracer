@@ -10,6 +10,7 @@
 #include "test_rgbcolor.cc"
 #include "test_infplane.cc"
 #include "test_sphere.cc"
+#include "test_scene.cc"
 
 using namespace testing;
 

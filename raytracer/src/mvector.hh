@@ -3,7 +3,7 @@
  * @author Hamik Mukelyan
  */
 
-#include <ostream>
+#include <iostream>
 #include <cassert>
 #include <cmath>
 
@@ -331,13 +331,13 @@ public:
      */
     void print(std::ostream &os) const {
     	int i = 0;
-    	os << "(";
+    	os << "<";
     	do {
     		os << v[i];
     		if (i + 1 != size)
     			os << ", ";
     	} while (++i < size);
-    	os << ")";
+    	os << ">";
     }
 
     /**
@@ -395,6 +395,61 @@ template<typename T, int size>
 std::ostream & operator<<(std::ostream& os, const mvector<T, size> &vec) {
 	vec.print(os);
 	return os;
+}
+
+/**
+ * Makes the input operator compatible with input formatted like
+ * <x_1, ..., x_n>, where x_1, x_2, and so forth are coordinates and where
+ * whitespace doesn't matter. Note that this function works with vectors
+ * of any type or dimension as long as the input operator >> works on the
+ * type.
+ *
+ * @param is The input stream from which to read.
+ * @param v The vector into which we'll read.
+ *
+ * @return The same input stream for operator chaining.
+ *
+ * @throw ios_base::failure If input doesn't conform to <x_1, ..., x_n>
+ */
+template<typename T, int size>
+std::istream & operator>>(std::istream& is, mvector<T, size> &v) {
+
+	if(!is) { // If not ready...
+		return is; // ...already failed, just return.
+	}
+
+	// Configure istream to throw an exception if the failbit gets set below.
+	is.exceptions(std::ios_base::failbit);
+
+	// Otherwise get the first char.
+	char c;
+	is >> c;
+	if (c == '<') { // If it's the start of a vector, then...
+
+		assert(size > 0);
+		int i = 0;
+		do {
+			is >> v[i] >> c;
+			if (c != ',') { // If wasn't a comma after coordinate, bad format.
+				is.clear(std::ios_base::failbit);
+			}
+			i++;
+		} while (i < size - 1);
+
+		// When we reach here we have one coordinate left to read.
+		assert(i == size - 1);
+		is >> v[size - 1] >> c;
+		if (c != '>') { // If no closing bracket, then bad format.
+			is.clear(std::ios_base::failbit);
+		}
+
+	}
+	else { // If first char wasn't <, put it back into the stream and return.
+		is.putback(c);
+		return is;
+	}
+
+	return is;
 }
 
 typedef mvector<double, 3> vector3d;

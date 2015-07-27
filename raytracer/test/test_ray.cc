@@ -136,13 +136,13 @@ TEST_F(RayTest, Print) {
 	s << *a;
 	char cstring[100];
 	s.getline(cstring, 100);
-	ASSERT_STREQ("start: (0, 0, 5)\tdirection: (0, 0, -1)", cstring);
+	ASSERT_STREQ("start: <0, 0, 5>\tdirection: <0, 0, -1>", cstring);
 
 	std::stringstream t;
 	t << *b;
 	char cstring2[100];
 	t.getline(cstring2, 100);
-	ASSERT_STREQ("start: (0, 5)\tdirection: (0, -2)", cstring2);
+	ASSERT_STREQ("start: <0, 5>\tdirection: <0, -2>", cstring2);
 }
 
 #endif // TEST_RAY_CC

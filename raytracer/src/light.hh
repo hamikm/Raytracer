@@ -98,17 +98,11 @@ public:
 	}
 };
 
-typedef light<double, double, double, 3> light3d;
-typedef light<double, double, float, 3> light3ddf;
-typedef light<float, float, float, 3> light3f;
-typedef light<double, double, double, 2> light2d;
-typedef light<double, double, float, 2> light2ddf;
-typedef light<float, float, float, 2> light2f;
-typedef boost::shared_ptr<light<double, double, double, 3> > sp_light3d;
-typedef boost::shared_ptr<light<double, double, float, 3> > sp_light3ddf;
-typedef boost::shared_ptr<light<float, float, float, 3> > sp_light3f;
-typedef boost::shared_ptr<light<double, double, double, 2> > sp_light2d;
-typedef boost::shared_ptr<light<double, double, float, 2> > sp_light2ddf;
-typedef boost::shared_ptr<light<float, float, float, 2> > sp_light2f;
+typedef light<double, double, double, 3> lightd;
+typedef light<double, double, float, 3> lightddf;
+typedef light<float, float, float, 3> lightf;
+typedef boost::shared_ptr<light<double, double, double, 3> > sp_lightd;
+typedef boost::shared_ptr<light<double, double, float, 3> > sp_lightddf;
+typedef boost::shared_ptr<light<float, float, float, 3> > sp_lightf;
 
 #endif // LIGHT_HH

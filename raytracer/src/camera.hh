@@ -8,6 +8,7 @@
 #include "light.hh"
 #include "shape.hh"
 #include "mvector.hh"
+#include "boost/shared_ptr.hpp"
 #include <cassert>
 #include <vector>
 #include <iostream>
@@ -91,21 +92,25 @@ public:
 
 	/**
 	 * Generates a ray that goes from the camera through the given pixel
-	 * in the square image grid determined by @c dist and @c fov.
+	 * in the rectangular image grid determined by @c dist and @c fov.
 	 *
 	 * @param x x coordinate of pixel. Increases to right.
 	 * @param y y coordinate of pixel. Increases to @e bottom.
-	 * @param imgSize Width (and height) of the square image in pixels.
+	 * @param width Width of the image in pixels.
+	 * @param height Height of the iamge in pixels.
 	 *
 	 * @return Ray from the camera's position through the given pixel.
 	 */
-	ray<vec_T, time_T, dim> getRayForPixel(int x, int y, int imgSize) const {
+	ray<vec_T, time_T, dim> getRayForPixel(int x, int y,
+			int width, int height) const {
 		assert(x >= 0);
 		assert(y >= 0);
-		assert(imgSize > 0);
+		assert(width > 0);
+		assert(height > 0);
+		vec_T centerx = ((vec_T) width) / height / 2;
 	    mvector<vec_T, dim> pixelDir = dist * dir +
-	    		(0.5 - (vec_T) y / (vec_T) (imgSize - 1)) * up +
-				((vec_T) x / (vec_T) (imgSize - 1) - 0.5) * right;
+	    		(0.5 - (vec_T) y / (vec_T) (height - 1)) * up +
+				((vec_T) x / (vec_T) (height - 1) - centerx) * right;
 
 	    ray<vec_T, time_T, dim> pixelRay(pos, pixelDir);
 	    return pixelRay;
@@ -141,11 +146,11 @@ std::ostream & operator<<(std::ostream &os,
 	return os;
 }
 
-typedef camera<double, double, 3> camera3d;
-typedef camera<double, float, 3> camera3df;
-typedef camera<float, float, 3> camera3f;
-typedef camera<double, double, 2> camera2d;
-typedef camera<double, float, 2> camera2df;
-typedef camera<float, float, 2> camera2f;
+typedef camera<double, double, 3> camerad;
+typedef camera<double, float, 3> cameradf;
+typedef camera<float, float, 3> cameraf;
+typedef boost::shared_ptr<camera<double, double, 3> > sp_camerad;
+typedef boost::shared_ptr<camera<double, float, 3> > sp_cameradf;
+typedef boost::shared_ptr<camera<float, float, 3> > sp_cameraf;
 
 #endif // CAMERA_HH

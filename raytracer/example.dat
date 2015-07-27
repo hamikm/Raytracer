@@ -1,0 +1,22 @@
+# This is an example scene description file. Follow the format below. There
+# can only be one camera per scene, but there can be any number of lights or
+# shapes like spheres and planes.
+
+# The file MUST be terminated by "end" because these data files are 
+# redirected into standard in.
+
+# Comments must begin with a # AND a space. The "# " must be at the very
+# beginning of the line you wish to comment.
+
+light  (0.8, 0.8, 0.8) <-10.0, 10.0, 5.0>
+light  (0.3, 0.3, 0.3) <5.0, 3.0, 5.0>
+
+sphere (1, 0, 0) 0.5 <-1.2, 0.5, 0.0>
+sphere (0, 1, 0) 0.5 <0.0, 0.5, 0.0>
+sphere (0, 0, 1) 0.5 <0.2, 0.5, 1.0>
+
+plane  (0.5, 0.0, 0.5) 0 <0.0, 1.0, 0.0>
+
+camera <-1.5, 1.0, 3.0> <-0.3, 0.5, 0.0> <0.0, 1.0, 0.0>
+
+end

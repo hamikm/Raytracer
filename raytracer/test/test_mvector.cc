@@ -7,6 +7,7 @@
 #include "gtest/gtest.h"
 #include <cmath>
 #include <sstream>
+#include <string>
 
 #ifndef TEST_MVECTOR_CC
 #define TEST_MVECTOR_CC
@@ -341,7 +342,78 @@ TEST_F(mvectorTest, Print) {
 	s << a;
 	char cstring[100];
 	s.getline(cstring, 100);
-	ASSERT_STREQ("(2, 0, 0)", cstring);
+	ASSERT_STREQ("<2, 0, 0>", cstring);
+}
+
+/*
+ * Exercises the input operator.
+ */
+TEST_F(mvectorTest, Input) {
+
+	// Test input of 3-vector with ints.
+	std::string strvec = "<1, 2, 3>";
+	std::stringstream iss(strvec);
+	std::stringstream oss;
+	mvector<int, 3> itestvec;
+	iss >> itestvec;
+	oss << itestvec;
+	ASSERT_STREQ(iss.str().c_str(), oss.str().c_str());
+	ASSERT_EQ(strvec.length(), iss.tellg()); // assert input was consumed
+
+	// Test input of 3-vector with doubles.
+	strvec = "<1.5, 2.5, 3.5>";
+	iss.str(strvec); // overwrite the stringstream with new contents
+	oss.str(""); // overwrite the stringstream with empty string
+	vector3d dtestvec1;
+	iss >> dtestvec1;
+	oss << dtestvec1;
+	ASSERT_STREQ(iss.str().c_str(), oss.str().c_str());
+	ASSERT_EQ(strvec.length(), iss.tellg()); // assert input was consumed
+
+	// Test input of 5-vector with doubles.
+	strvec = "<1.5, 2.5, 3.5, 4.5, 5.5>";
+	iss.str(strvec);
+	oss.str("");
+	mvector<double, 5> dtestvec2;
+	iss >> dtestvec2;
+	oss << dtestvec2;
+	ASSERT_STREQ(iss.str().c_str(), oss.str().c_str());
+	ASSERT_EQ(strvec.length(), iss.tellg()); // assert input was consumed
+
+	// Test that starting without < doesn't consume input and no exception.
+	strvec = "(1, 2, 3)";
+	iss.str(strvec);
+	oss.str("");
+	iss >> itestvec; // should do nothing. iss should be unmodified.
+	ASSERT_STREQ("", oss.str().c_str());
+	ASSERT_EQ(0, iss.tellg()); // assert NO INPUT was consumed
+
+	// Test that bad internal formatting causes exception.
+	strvec = "<2 , 2 2>"; // bad formatting... should throw exception on input
+	iss.str(strvec);
+	oss.str("");
+	ASSERT_THROW(iss >> itestvec, std::ios_base::failure);
+	iss.clear(); // reset error flags
+
+	// Test that not ending with a > causes exception.
+	strvec = "<2 , 2 2)"; // bad formatting... should throw exception on input
+	iss.str(strvec);
+	oss.str("");
+	ASSERT_THROW(iss >> itestvec, std::ios_base::failure);
+	iss.clear(); // reset error flags
+
+	// Test that whitespace is handled correctly.
+	strvec = "  <    1.5  , 2.5,3.5    >    f";
+	std::string real = "<1.5, 2.5, 3.5>";
+	iss.str(strvec); // overwrite the stringstream with new contents
+	oss.str(""); // overwrite the stringstream with empty string
+	iss >> dtestvec1;
+	oss << dtestvec1;
+	ASSERT_STREQ(real.c_str(), oss.str().c_str());
+	// Check that vector was consumed by checking if f is the next thing read.
+	char c;
+	iss >> c;
+	ASSERT_EQ('f', c);
 }
 
 #endif // TEST_MVECTOR_CC
