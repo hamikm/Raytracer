@@ -6,11 +6,11 @@
 light (0.8, 0.8, 0.8) <-10.0, 10.0, 5.0>
 light (0.3, 0.3, 0.3) <5.0, 3.0, 5.0>
 
-# format for spheres is: sphere color radius center
+# Format for spheres is: sphere color radius center
 sphere (1, 0, 0) 0.5 <-1.2, 0.5, 0.0> 0.5
 sphere (0, 0, 1) 0.5 <1.2, 0.5, 0.0> 0.5
 
-# format for cylinders:: cylinder color radius center axis height reflectivity
+# Format for cylinders:: cylinder color radius center axis height reflectivity
 cylinder (0, 1.0, 0) 0.3 <0.0, 0.5, 0.0> <0.0, 1.0, 0.0> 1.0 0.5
 
 # Format for planes is: plane color distance_from_origin surface_normal
