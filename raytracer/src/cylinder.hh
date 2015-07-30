@@ -99,7 +99,11 @@ public:
 		  float reflectivity = 0) :
 			  shape<vec_T, color_T, time_T, CDIM>(color, reflectivity),
 			  center(theCenter), radius(radius),
-			  axis(orientation.norm()), height(height) { }
+			  axis(orientation.norm()), height(height) {
+		assert(CDIM == 3);
+		assert(height > 0);
+		assert(radius > 0);
+	}
 
 	/**
 	 * Copy constructor. Uses the @c shape copy constructor for the color
@@ -189,6 +193,7 @@ public:
 	 * @param height The new height of this cylinder.
 	 */
 	void setHeight(vec_T height) {
+		assert(height > 0);
 		this->height = height;
 	}
 
@@ -207,6 +212,7 @@ public:
 	 * @param radius The new radius for this cylinder.
 	 */
 	void setRadius(vec_T radius) {
+		assert(radius > 0);
 		this->radius = radius;
 	}
 

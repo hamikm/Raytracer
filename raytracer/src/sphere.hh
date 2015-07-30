@@ -69,7 +69,9 @@ public:
 		  float reflectivity = 0) :
 			  shape<vec_T, color_T, time_T, dim>(color, reflectivity),
 			  rad(radius),
-			  center(theCenter) { }
+			  center(theCenter) {
+		assert(radius > 0);
+	}
 
 	/**
 	 * Copy constructor. Uses the @c shape copy constructor for the color

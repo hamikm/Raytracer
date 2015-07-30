@@ -75,7 +75,9 @@ public:
 			const mvector<vec_T, dim> &surfaceNormal,
 			float reflectivity = 0) :
 				shape<vec_T, color_T, time_T, dim>(color, reflectivity),
-				dist(distFromOrig), surfNorm(surfaceNormal.norm()) { }
+				dist(distFromOrig), surfNorm(surfaceNormal.norm()) {
+		assert(distFromOrig >= 0);
+	}
 
 	/**
 	 * Copy constructor. Uses the @c shape copy constructor.
