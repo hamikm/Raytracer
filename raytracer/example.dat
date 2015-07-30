@@ -1,8 +1,6 @@
 # This is an example scene description file. Follow the format below. There
 # can only be one camera per scene, but there can be any number of lights or
-# shapes like spheres and planes. Comments must begin with a # AND a space. 
-# A "#" character followed by a single space must at the beginning of each 
-# comment line.
+# shapes like spheres and planes. Comments must begin with a # AND a space.
 
 # Format for lights is: light color position
 light (0.8, 0.8, 0.8) <-10.0, 10.0, 5.0>
