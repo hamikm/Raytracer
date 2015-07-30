@@ -30,6 +30,11 @@
 #define COLORMAX 255
 
 /**
+ * Maximum number of reflections to track.
+ */
+#define MAX_REFLECT 10
+
+/**
  * Represents a 3D scene as a collection of shape object pointers and light
  * pointers.
  *
@@ -77,30 +82,6 @@ public:
 	 * Constructs an empty scene.
 	 */
 	scene() { }
-
-	/**
-	 * Steps through the vector of light pointers and vector of shape pointers,
-	 * deleting each one.
-	 *
-	 * @warning Make sure that the lights and shapes added with @c addLight or
-	 *   @c addShape are not deleted before or after this destructor runs.
-	 */
-	~scene() {
-
-		/* TODO remove?
-		typename std::vector<light<vec_T, color_T, time_T, dim> * >::iterator
-			iter;
-		for (iter = lights.begin(); iter < lights.end(); iter++) {
-			delete *iter;
-		}
-
-		typename std::vector<shape<vec_T, color_T, time_T, dim> * >::iterator
-			iter2;
-		for (iter2 = shapes.begin(); iter2 < shapes.end(); iter2++) {
-			delete *iter2;
-		}
-		*/
-	}
 
 	/**
 	 * Adds a shape to the scene.
@@ -163,11 +144,13 @@ public:
 	 * colors of lights in the scene.
 	 *
 	 * @param r The ray whose color will be determined.
+	 * @param depth The current reflection depth. The recursion
 	 *
 	 * @return The color of the given ray or @c DEFAULT_BKCOLOR if there is no
 	 * intersection.
 	 */
-	rgbcolor<color_T> traceRay(const ray<vec_T, time_T, dim> &r) const {
+	rgbcolor<color_T> traceRay(
+			const ray<vec_T, time_T, dim> &r, int depth = 0) const {
 		time_T tIntersect; // out parameter
 		sp_shape intersectedObjPtr =
 				findClosestShape(r, tIntersect);
@@ -175,22 +158,31 @@ public:
 			return DEFAULT_BKCOLOR;
 		}
 
+		mvector<vec_T, dim> intersectionPt = r.getPointAtT(tIntersect);
+		mvector<vec_T, dim> N = intersectedObjPtr->surfaceNorm(intersectionPt);
+
 		// Loop over all the lights, summing the color contributions from
 		// each one
 		rgbcolor<color_T> finalColor;
 		typename std::vector<sp_light>::const_iterator iter;
 		for (iter = lights.begin(); iter < lights.end(); iter++) {
-			mvector<vec_T, dim> intersectionPt = r.getPointAtT(tIntersect);
 			sp_light currLightPtr = *iter;
 			mvector<vec_T, dim> L = currLightPtr->getPos() - intersectionPt;
 			L = L.norm();
-			mvector<vec_T, dim> N =
-					intersectedObjPtr->surfaceNorm(intersectionPt);
 			vec_T LdotN = L * N;
 			if(LdotN > 0) {
 				finalColor += (currLightPtr->getColor() *
 						intersectedObjPtr->getColor() * LdotN);
 			}
+		}
+
+		if (intersectedObjPtr->getReflectivity() > 0 && depth < MAX_REFLECT) {
+			// R_r is the direction of the reflected vector
+			ray<vec_T, time_T, dim> R_r = r.reflect(intersectionPt, N);
+			// col_r is the reflection color
+			rgbcolor<color_T> col_r = traceRay(R_r, depth + 1);
+			finalColor +=
+					((color_T) intersectedObjPtr->getReflectivity()) * col_r;
 		}
 
 		return finalColor;

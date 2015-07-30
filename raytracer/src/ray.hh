@@ -29,12 +29,12 @@ private:
 	 * Point of origin of this ray. Represented as a vector even though it's
 	 * actually a point.
 	 */
-	mvector<vec_T, dim> orig;
+	mvector<vec_T, dim> P;
 
 	/**
 	 * Direction of this ray. Can be normalized or not.
 	 */
-	mvector<vec_T, dim> dir;
+	mvector<vec_T, dim> D;
 
 public:
 
@@ -44,10 +44,10 @@ public:
 	 */
 	ray() {
 		for (int i = 0; i < dim; i++) {
-			orig[i] = 0;
-			dir[i] = 0;
+			P[i] = 0;
+			D[i] = 0;
 		}
-		dir[0] = 1;
+		D[0] = 1;
 	}
 
 	/**
@@ -61,8 +61,8 @@ public:
 	 */
 	ray(const mvector<vec_T, dim> &start, const mvector<vec_T, dim> &direction,
 			bool normalizeDir = true) {
-		this->orig = start; // copy origination point to orig
-		this->dir = normalizeDir ? direction.norm() : direction;
+		this->P = start; // copy origination point to orig
+		this->D = normalizeDir ? direction.norm() : direction;
 	}
 
 	/**
@@ -71,7 +71,7 @@ public:
 	 * @return Direction.
 	 */
 	const mvector<vec_T, dim>& getDir() const {
-		return dir;
+		return D;
 	}
 
 	/**
@@ -85,8 +85,8 @@ public:
 			const ray<vec_T, time_T, dim>& rhs) {
 		if(this == &rhs) // check for self-assignment
 			return *this;
-		orig = rhs.getOrig();
-		dir = rhs.getDir();
+		P = rhs.getOrig();
+		D = rhs.getDir();
 		return *this;
 	}
 
@@ -96,7 +96,7 @@ public:
 	 * @return Origin point.
 	 */
 	const mvector<vec_T, dim>& getOrig() const {
-		return orig;
+		return P;
 	}
 
 	/**
@@ -109,7 +109,35 @@ public:
 	 */
 	mvector<vec_T, dim> getPointAtT(time_T t) const {
 		assert(t >= 0);
-		return orig + t * dir;
+		return P + t * D;
+	}
+
+	/**
+	 * Gets the ray that is reflected when this ray strikes the given point
+	 * against the given surface normal. This function uses the following
+	 * formulas. Note that the third parameter, @c epsilon, is optional and has
+	 * a small positive default value.
+	 *
+	 * Let @f$ \mathbf{R_i} = \mathbf{P} + \mathbf{D} t @f$ be
+	 * the incident ray (i.e., this one). Then @f$ \mathbf{D_r} = \mathbf{D} +
+	 * 2 \mathrm{\,proj}(-\mathbf{D}, \mathbf{N})@f$ is the direction of the
+	 * reflected ray and @f$ \mathbf{R_r} = \mathbf{X} +
+	 * \mathbf{D_r} \epsilon + \mathbf{D_r} t @f$
+	 *
+	 * @param X The intersection point of this ray with a reflective object.
+	 * @param N The surface normal at the point of intersection.
+	 * @param epsilon A small positive time value used in the reflected ray
+	 *        computation.
+	 *
+	 * @return The reflected ray.
+	 */
+	ray<vec_T, time_T, dim> reflect(
+			const mvector<vec_T, dim> &X,
+			const mvector<vec_T, dim> &N,
+			time_T epsilon = 0.0001) const {
+		mvector<vec_T, dim> D_r = D + ((vec_T) 2) * (-D).proj(N);
+		ray<vec_T, time_T, dim> R_r(X + D_r * epsilon, D_r);
+		return R_r;
 	}
 
 	/**
@@ -118,7 +146,7 @@ public:
 	 * @param os The output stream to which to print.
 	 */
 	void printHelper(std::ostream& os) const {
-		os << "start: " << orig << "\tdirection: " << dir;
+		os << "start: " << P << "\tdirection: " << D;
 	}
 };
 

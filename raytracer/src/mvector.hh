@@ -130,7 +130,7 @@ public:
 	 *
 	 * @return Reference to this vector for operator chaining.
 	 */
-	mvector & operator+=(const mvector &rhs) {
+	mvector<T, size> & operator+=(const mvector<T, size> &rhs) {
 		for (int i = 0; i < size; i++)
 			v[i] += rhs[i];
 		return *this;
@@ -144,7 +144,7 @@ public:
 	 *
 	 * @return Reference to this vector for operator chaining.
 	 */
-	mvector & operator-=(const mvector &rhs) {
+	mvector<T, size> & operator-=(const mvector<T, size> &rhs) {
 		for (int i = 0; i < size; i++)
 			v[i] -= rhs[i];
 		return *this;
@@ -158,7 +158,7 @@ public:
 	 *
 	 * @return Reference to this vector for operator chaining.
 	 */
-	mvector & operator*=(T scalar) {
+	mvector<T, size> & operator*=(T scalar) {
 		for (int i = 0; i < size; i++)
 			v[i] *= scalar;
 		return *this;
@@ -172,7 +172,7 @@ public:
 	 *
 	 * @return Reference to this vector for operator chaining.
 	 */
-	mvector & operator/=(T scalar) {
+	mvector<T, size> & operator/=(T scalar) {
 		assert(scalar != 0);
 		for (int i = 0; i < size; i++)
 			v[i] /= scalar;
@@ -186,7 +186,7 @@ public:
 	 *
 	 * @return The sum as a const value.
 	 */
-	const mvector operator+(const mvector &rhs) const {
+	const mvector<T, size> operator+(const mvector<T, size> &rhs) const {
 		mvector tmp = *this;
 		for (int i = 0; i < size; i++)
 			tmp[i] += rhs[i];
@@ -200,7 +200,7 @@ public:
 	 *
 	 * @return The difference as a const value.
 	 */
-	const mvector operator-(const mvector &rhs) const {
+	const mvector<T, size> operator-(const mvector<T, size> &rhs) const {
 		mvector tmp = *this;
 		for (int i = 0; i < size; i++)
 			tmp[i] -= rhs[i];
@@ -214,7 +214,7 @@ public:
 	 *
 	 * @return The quotient as a const value.
 	 */
-	const mvector operator/(T scalar) const {
+	const mvector<T, size> operator/(T scalar) const {
 		assert(scalar != 0);
 		mvector tmp = *this;
 		for (int i = 0; i < size; i++)
@@ -229,7 +229,7 @@ public:
 	 *
 	 * @warning This is not a mutator.
 	 */
-	const mvector operator-() const {
+	const mvector<T, size> operator-() const {
 		mvector tmp = *this;
 		for (int i = 0; i < size; i++)
 			tmp[i] *= -1;
@@ -243,7 +243,7 @@ public:
 	 *
 	 * @return Dot product.
 	 */
-	T operator*(const mvector &rhs) const {
+	T operator*(const mvector<T, size> &rhs) const {
 		T result = 0;
 		for (int i = 0; i < size; i++)
 			result += rhs[i] * v[i];
@@ -258,7 +258,7 @@ public:
 	 *
 	 * @return Cross product as a const value.
 	 */
-	const mvector operator%(const mvector &rhs) const {
+	const mvector<T, size> operator%(const mvector<T, size> &rhs) const {
 		assert(size == 3);
 		assert(rhs.dim() == 3);
 		mvector tmp;
@@ -315,12 +315,24 @@ public:
      *
      * @return Normalized vector.
      */
-    mvector norm() const {
+    mvector<T, size> norm() const {
     	mvector vec(*this);
     	T magnitude = mag();
     	for (int i = 0; i < size; i++)
     		vec[i] /= magnitude;
     	return vec;
+    }
+
+    /**
+     * Gets the projection of this vector onto the given vector.
+     *
+     * @param a Vector to project.
+     *
+     * @return The projection of @c a onto @c b.
+     */
+    mvector<T, size> proj(const mvector<T,size> &a) const {
+    	mvector<T, size> projection = a * (((*this) * a) / (a * a));
+    	return projection;
     }
 
     /**

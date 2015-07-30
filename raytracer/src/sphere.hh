@@ -44,7 +44,7 @@ public:
 
 	/**
 	 * Constructs a grey sphere with radius 1 and center at the origin. Calls
-	 * the @c shape default constructor to set the color.
+	 * the @c shape default constructor to set the color and reflectivity.
 	 */
 	sphere() : shape<vec_T, color_T, time_T, dim>() {
 		assert(dim > 0);
@@ -54,17 +54,19 @@ public:
 	}
 
 	/**
-	 * Constructors a sphere with given color, radius, and center. Sets the
-	 * color via a @c shape constructor.
+	 * Constructors a sphere with given color, radius, center and reflectivity
+	 * (default value of ). Sets the color via a @c shape constructor.
 	 *
 	 * @param color Color.
 	 * @param radius Radius.
-	 * @param theCenter Center.s
+	 * @param theCenter Center.
+	 * @param reflectivity Default value is 0.
 	 */
 	sphere(const rgbcolor<color_T> &color,
 		  vec_T radius,
-		  const mvector<vec_T, dim> &theCenter) :
-			  shape<vec_T, color_T, time_T, dim>(color),
+		  const mvector<vec_T, dim> &theCenter,
+		  float reflectivity = 0) :
+			  shape<vec_T, color_T, time_T, dim>(color, reflectivity),
 			  rad(radius),
 			  center(theCenter) { }
 
@@ -75,7 +77,8 @@ public:
 	 * @param other The other @c sphere object to copy into this one.
 	 */
 	sphere(const sphere<vec_T, color_T, time_T, dim> &other) :
-			shape<vec_T, color_T, time_T, dim>(other.getColor()) {
+			shape<vec_T, color_T, time_T, dim>(
+					other.getColor(), other.getReflectivity()) {
 		rad = other.getRadius();
 		center = other.getCenter();
 	}
@@ -90,6 +93,7 @@ public:
 		if(this == &rhs) // check for self-assignment
 			return *this;
 		this->setColor(rhs.getColor());
+		this->setReflectivity(rhs.getReflectivity());
 		rad = rhs.getRadius();
 		center = rhs.getCenter();
 		return *this;

@@ -346,6 +346,23 @@ TEST_F(mvectorTest, Print) {
 }
 
 /*
+ * Exercises the proj function.
+ */
+TEST_F(mvectorTest, Proj) {
+	vector2d a1(2.0, 2.0), b1(3.0, 0.0);
+	// x comp of projection should be 2
+	ASSERT_DOUBLE_EQ(2, a1.proj(b1)[0]);
+	// y comp of projection should be 0
+	ASSERT_DOUBLE_EQ(0, a1.proj(b1)[1]);
+
+	vector2d a2(0.0, 3.0), b2(2.0, 2.0 * sqrt(3));
+	// x comp of projection should be...
+	ASSERT_DOUBLE_EQ(1.5 / 2 * sqrt(3), a2.proj(b2)[0]);
+	// y comp of projection should be...
+	ASSERT_DOUBLE_EQ(1.5 * 3 / 2, a2.proj(b2)[1]);
+}
+
+/*
  * Exercises the input operator.
  */
 TEST_F(mvectorTest, Input) {

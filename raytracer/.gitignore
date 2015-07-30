@@ -14,3 +14,4 @@ rt
 drt
 unit_tests
 Makefile.*
+example_*.dat

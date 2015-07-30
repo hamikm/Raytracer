@@ -124,6 +124,20 @@ TEST_F(RayTest, GetPointAtTTest) {
 	ASSERT_FLOAT_EQ(6.5, c->getPointAtT(5.5f)[0]); // x coord at t = 5.5
 	ASSERT_FLOAT_EQ(7.5, c->getPointAtT(5.5f)[1]); // y coord at t = 5.5
 }
+
+/*
+ * Exercises the reflection function.
+ */
+TEST_F(RayTest, Reflect) {
+	ray2d r(vector2d(-2.0, 2.0), vector2d(1.0, -1.0));
+	// now get the reflected ray. epsilon is 0 just for testing...
+	ray2d r_r = r.reflect(vector2d(0.0, 0.0), vector2d(0.0, 1.0), 0.0);
+	ASSERT_DOUBLE_EQ(0, r_r.getOrig()[0]);
+	ASSERT_DOUBLE_EQ(0, r_r.getOrig()[1]);
+	ASSERT_DOUBLE_EQ(sqrt(2) / 2, r_r.getDir()[0]);
+	ASSERT_DOUBLE_EQ(sqrt(2) / 2, r_r.getDir()[1]);
+}
+
 /*
  * The getter functions obviously work, so there are no unit tests for them.
  */

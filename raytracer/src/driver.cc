@@ -31,9 +31,10 @@ typedef sp_shape3d (*sceneObjInputFunction)(istream&);
 /**
  * Reads sphere data from the given input stream then outputs a Boost shared
  * pointer to a sphere constructed from that data. Format must be
- * @code color radius center @endcode
- * where @c color is in the format (r, g, b) and @c center is in the format
- * <x, y, z>.
+ * @code color radius center reflectivity @endcode
+ * where @c color is in the format (r, g, b), @c radius is just a double,
+ * @c center is in the format <x, y, z>, and @c reflectivity is just a float
+ * between 0 and 1, inclusive. All fields are required.
  *
  * @param is The input stream from which to read.
  *
@@ -41,10 +42,11 @@ typedef sp_shape3d (*sceneObjInputFunction)(istream&);
  */
 sp_shape3d readSphere(istream &is) {
 	rgbcolord color;
+	float reflectivity;
 	double rad;
 	vector3d vec;
-	cin >> color >> rad >> vec;
-	sp_shape3d x(new sphere3d(color, rad, vec));
+	cin >> color >> rad >> vec >> reflectivity;
+	sp_shape3d x(new sphere3d(color, rad, vec, reflectivity));
 	return x;
 }
 
@@ -61,10 +63,11 @@ sp_shape3d readSphere(istream &is) {
  */
 sp_shape3d readPlane(istream &is) {
 	rgbcolord color;
+	float reflectivity;
 	double dist;
 	vector3d vec;
-	cin >> color >> dist >> vec;
-	sp_shape3d x(new infplaned(color, dist, vec));
+	cin >> color >> dist >> vec >> reflectivity;
+	sp_shape3d x(new infplaned(color, dist, vec, reflectivity));
 	return x;
 }
 

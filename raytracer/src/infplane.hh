@@ -47,7 +47,7 @@ public:
 	 * Constructs a plane with distance 0 from the origin
 	 * and a surface normal of @f$ (0, \cdots , 1) @f$. That is, it creates the
 	 * @f$ xy @f$ plane in 3D and the @f$ x @f$ axis in 2D. Its color is grey
-	 * via the @c shape default constructor.
+	 * and its reflectivity is 0 via the @c shape default constructor
 	 */
 	infplane() : shape<vec_T, color_T, time_T, dim>() {
 		assert(dim > 0);
@@ -72,8 +72,9 @@ public:
 	 */
 	infplane(const rgbcolor<color_T> &color,
 			vec_T distFromOrig,
-			const mvector<vec_T, dim> &surfaceNormal) :
-				shape<vec_T, color_T, time_T, dim>(color),
+			const mvector<vec_T, dim> &surfaceNormal,
+			float reflectivity = 0) :
+				shape<vec_T, color_T, time_T, dim>(color, reflectivity),
 				dist(distFromOrig), surfNorm(surfaceNormal.norm()) { }
 
 	/**
@@ -82,7 +83,8 @@ public:
 	 * @param other
 	 */
 	infplane(const infplane<vec_T, color_T, time_T, dim> &other) :
-			shape<vec_T, color_T, time_T, dim>(other.getColor()) {
+			shape<vec_T, color_T, time_T, dim>(
+					other.getColor(), other.getReflectivity()) {
 		dist = other.getDist();
 		surfNorm = other.getSurfNorm();
 	}
@@ -99,6 +101,7 @@ public:
 		if(this == &rhs) // check for self-assignment
 			return *this;
 		this->setColor(rhs.getColor());
+		this->setReflectivity(rhs.getReflectivity());
 		dist = rhs.getDist();
 		surfNorm = rhs.getSurfNorm();
 		return *this;

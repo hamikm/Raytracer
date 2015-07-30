@@ -34,22 +34,36 @@
  */
 template<typename vec_T, typename color_T, typename time_T, int dim>
 class shape : public sceneobj<vec_T, color_T, time_T, dim> {
+private:
+
+	/**
+	 * Reflectivity of this object, which is a number between 0 and 1. 1 means
+	 * totally reflective and 0 means not at all reflective.
+	 */
+	float reflectivity;
+
 public:
 
 	/**
 	 * Initializes the color of this object to gray via the @c sceneobj
-	 * default constructor.
+	 * default constructor and the reflectivity of this object to 0.
 	 */
-	shape() : sceneobj<vec_T, color_T, time_T, dim>() { }
+	shape() : sceneobj<vec_T, color_T, time_T, dim>(), reflectivity(0) { }
 
 	/**
 	 * Initializes the color of this object to the specified value via a
-	 * @c sceneobj constructor.
+	 * @c sceneobj constructor and initializes reflectivity to the given
+	 * value or zero by default. Relflectivity must be between 0 and 1.
 	 *
-	 * @param color Color.
+	 * @param color
+	 * @param reflectivity Optional parameter between 0 and 1 that defaults to
+	 * 0.
 	 */
-	shape(rgbcolor<color_T> color) :
-		sceneobj<vec_T, color_T, time_T, dim>(color) { }
+	shape(rgbcolor<color_T> color, float reflectivity = 0) :
+			sceneobj<vec_T, color_T, time_T, dim>(color) {
+		assert(reflectivity >= 0 && reflectivity <= 1);
+		this->reflectivity = reflectivity;
+	}
 
 	/**
 	 * Copy constructor. Uses the @c sceneobj copy constructor.
@@ -57,7 +71,9 @@ public:
 	 * @param other The other @c shape object to copy into this one.
 	 */
 	shape(const shape& other) :
-		sceneobj<vec_T, color_T, time_T, dim>(other) { }
+		sceneobj<vec_T, color_T, time_T, dim>(other) {
+		this->reflectivity = other.reflectivity;
+	}
 
 	/**
 	 * Does nothing here but might need to be defined in subclasses.
@@ -87,6 +103,26 @@ public:
 	 */
 	virtual mvector<vec_T, dim> surfaceNorm(
 			const mvector<vec_T, dim> &surfacePt) const = 0;
+
+
+	/**
+	 * Getter for reflectivity.
+	 *
+	 * @returns Reflectivity.
+	 */
+	float getReflectivity() const {
+		return reflectivity;
+	}
+
+	/**
+	 * Setter for reflectivity.
+	 *
+	 * @param reflectivity The new reflectivity.
+	 */
+	void setReflectivity(float reflectivity) {
+		assert(reflectivity >= 0 && reflectivity <= 1);
+		this->reflectivity = reflectivity;
+	}
 
 	/**
 	 * Print helper function which partially overrides the one in @c sceneobj.
