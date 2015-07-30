@@ -11,8 +11,9 @@ then renders. If you modify this file you can then type "make view" for a quick
 rendering of the new scene. Make sure you have Eye of Gnome and the Boost 
 libraries installed. On Ubuntu you can install them like this: 
 
-  sudo apt-get install eog
-  sudo apt-get install libboost-all-dev
+sudo apt-get install eog
+  
+sudo apt-get install libboost-all-dev
   
 If you want more control over image dimensions, the file format, and so forth, 
 type "./rt" and read the output for instructions. 
