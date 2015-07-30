@@ -15,8 +15,12 @@ sudo apt-get install eog
   
 sudo apt-get install libboost-all-dev
   
-If you want more control over image dimensions, the file format, and so forth, 
-type "./rt" and read the output for instructions. 
+If you want more control over image dimensions, the file format, and so forth
+type "./rt" and read the output for instructions. All comments are written so
+that doxygen can auto-generate documentation for the source; just type "make
+docs" to build it into the doc folder. There are some LaTeX formulas in the
+documentation for tracing functions to hopefully facilitate understanding of
+the math.
 
 The labs which guided this project have been uploaded to the root directory as 
 labs.tar.gz. The Google test libraries needed for unit testing are included in 
