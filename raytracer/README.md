@@ -1,35 +1,26 @@
-The easiest way to run is to type "make view". Make sure you have Eye of Gnome
-and the Boost libraries installed. On Ubuntu you can install them like this: 
-  
-sudo apt-get install eog
+This is a simple raytracer which uses my own math vector class. Spheres,
+planes, cylinders, point lights, and reflections are currently supported. I 
+originally wrote this as a project for Caltech's CS11 class in summer 2015. 
+Check out the sample image, sample.png, in the root directory. 
 
-sudo apt-get install libboost-all-dev
+Also see example.dat in the root directoy for a demonstration of the scene 
+description language which is used to specify the scenes that the raytracer t
+hen renders. If you modify this file you can then type "make view" for a quick 
+rendering of the new scene. Make sure you have Eye of Gnome and the Boost 
+libraries installed. On Ubuntu you can install them like this: 
+
+  sudo apt-get install eog
+  sudo apt-get install libboost-all-dev
   
-The Google test libraries needed for unit testing are included in this
-repository and are automatically built by the makefile. There is fairly
+If you want more control over image dimensions, the file format, and so forth, 
+type "./rt" and read the output for instructions. 
+
+The labs which guided this project have been uploaded to the root directory as 
+labs.tar.gz. The Google test libraries needed for unit testing are included in 
+this repository and are automatically built by the makefile. There is fairly
 good unit test coverage; look at some of the test suites to familiarize
 yourself with the provided classes.
 
 --------------------------------------------------------------------------------
 
-This simple ray tracer was written for Caltech's CS11 advanced C++ track in 
-summer 2015. The lab specifications have been uploaded to this project as a 
-tarball in the root directory called labs.tar.gz. 
-
-I implemented the following Donnie's suggestion (verbatim from email):
-
-1)  Lights should also be scene objects, so the hierarchy is a bit better/
-    richer.  SceneObject would have "Light" and "Shape" as children, and then 
-    you could have different kinds of lights and different kinds of shapes.
-
-2)  The scene description language needs lights.
-
-TODO:
-
-3)  It would be cool to add spotlights as well as area lights to the raytracer
-    and to the scene description language.
-
-4)  Shadows also aren't too hard to figure out.  When you have an intersection 
-    with an object, just cast a ray to each light.  If the ray hits anything, 
-    skip that light.
-
+TODO: shadows, spot lights, area lights
