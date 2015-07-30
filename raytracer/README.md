@@ -6,8 +6,8 @@ Caltech's CS11 class in summer 2015. Check out the sample image, sample.png, in
 the root directory. 
 
 Also see example.dat in the root directoy for a demonstration of the scene 
-description language which is used to specify the scenes that the raytracer t
-hen renders. If you modify this file you can then type "make view" for a quick 
+description language which is used to specify the scenes that the raytracer
+then renders. If you modify this file you can then type "make view" for a quick 
 rendering of the new scene. Make sure you have Eye of Gnome and the Boost 
 libraries installed. On Ubuntu you can install them like this: 
 
