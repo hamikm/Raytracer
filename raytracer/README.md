@@ -27,7 +27,3 @@ labs.tar.gz. The Google test libraries needed for unit testing are included in
 this repository and are automatically built by the makefile. There is fairly
 good unit test coverage; look at some of the test suites to familiarize
 yourself with the provided classes.
-
---------------------------------------------------------------------------------
-
-TODO: shadows, spot lights, area lights
