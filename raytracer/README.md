@@ -1,7 +1,9 @@
-This is a simple raytracer which uses my own math vector class. Spheres,
-planes, cylinders, point lights, and reflections are currently supported. I 
-originally wrote this as a project for Caltech's CS11 class in summer 2015. 
-Check out the sample image, sample.png, in the root directory. 
+This is a simple raytracer which uses my own math vector class. It doesn't
+use OpenGL or any other graphics libraries; everything is from scratch just 
+like grandma's cookies! Spheres, planes, cylinders, point lights, and 
+reflections are currently supported. I originally wrote this as a project for 
+Caltech's CS11 class in summer 2015. Check out the sample image, sample.png, in 
+the root directory. 
 
 Also see example.dat in the root directoy for a demonstration of the scene 
 description language which is used to specify the scenes that the raytracer t
