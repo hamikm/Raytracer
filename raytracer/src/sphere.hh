@@ -6,6 +6,7 @@
 #include <cmath>
 #include "shape.hh"
 #include "sceneobj.hh"
+#include "mvector.hh"
 #include "ray.hh"
 
 #ifndef SPHERE_HH
@@ -43,7 +44,7 @@ private:
 public:
 
 	/**
-	 * Constructs a grey sphere with radius 1 and center at the origin. Calls
+	 * Constructs a grey sphere with radius 1, center at the origin. Calls
 	 * the @c shape default constructor to set the color and reflectivity.
 	 */
 	sphere() : shape<vec_T, color_T, time_T, dim>() {
@@ -55,7 +56,7 @@ public:
 
 	/**
 	 * Constructors a sphere with given color, radius, center and reflectivity
-	 * (default value of ). Sets the color via a @c shape constructor.
+	 * (default value of 0). Sets the color via a @c shape constructor.
 	 *
 	 * @param color Color.
 	 * @param radius Radius.
@@ -121,11 +122,10 @@ public:
 	 * Gets all intersection points of the given ray @c r with the this sphere.
 	 * Note that a ray can intersect a sphere
 	 * at 0, 1, or 2 points. The intersection times are returned in the out
-	 * parameters @c t1 and @c t2.
-	 * @c t2 is guaranteed to be larger than @c t1 and @c t1 will be defined
-	 * before @c t2.
-	 * If something isn't defined then it gets a @c RAY_MISS sentinel value.
-	 * Times less than zero are considered misses.
+	 * parameters @c t1 and @c t2. @c t2 is guaranteed to be larger than @c t1
+	 * and @c t1 will be defined before @c t2. If something isn't defined then
+	 * it gets a @c RAY_MISS sentinel value. Times less than zero are
+	 * considered misses.
 	 *
 	 * The intersection points are computed as the solution(s) to
 	 * @f$ a t^2 + b t + c = 0 @f$ where @f$ \mathbf{p} + \mathbf{d} t @f$
@@ -241,6 +241,5 @@ typedef sphere<float, float, float, 3> sphere3f;
 typedef sphere<double, double, double, 2> sphere2d;
 typedef sphere<double, double, float, 2> sphere2ddf;
 typedef sphere<float, float, float, 2> sphere2f;
-
 
 #endif // SPHERE_HH

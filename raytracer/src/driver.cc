@@ -9,6 +9,7 @@
 #include "sphere.hh"
 #include "camera.hh"
 #include "ray.hh"
+#include "cylinder.hh"
 #include "light.hh"
 #include "shape.hh"
 #include "mvector.hh"
@@ -47,6 +48,31 @@ sp_shape3d readSphere(istream &is) {
 	vector3d vec;
 	cin >> color >> rad >> vec >> reflectivity;
 	sp_shape3d x(new sphere3d(color, rad, vec, reflectivity));
+	return x;
+}
+
+/**
+ * Reads cylinder data from the given input stream then outputs a Boost shared
+ * pointer to a cylinder constructed from that data. Format must be
+ * @code color radius center axis height reflectivity @endcode
+ * where @c color is in the format (r, g, b), @c radius is just a double,
+ * @c center is in the format <x, y, z>, @c axis is the orientation of the long
+ * axis of the cylinder, @c height is the height of the cylinder, and
+ * @c reflectivity is just a float between 0 and 1, inclusive. All fields are
+ * required.
+ *
+ * @param is The input stream from which to read.
+ *
+ * @returns A Boost shared pointer to the sphere.
+ */
+sp_shape3d readCylinder(istream &is) {
+	rgbcolord color;
+	float reflectivity;
+	double radius, height;
+	vector3d vec1, vec2;
+	cin >> color >> radius >> vec1 >> vec2 >> height >> reflectivity;
+	sp_shape3d x(
+			new cylinderd(color, radius, vec1, height, vec2, reflectivity));
 	return x;
 }
 
@@ -138,6 +164,7 @@ int main(int argc, char **argv) {
 	/* Make the string-readerFunction mappings. */
 	readerFuncs["sphere"] = readSphere;
 	readerFuncs["plane"] = readPlane;
+	readerFuncs["cylinder"] = readCylinder;
 
 	scene3d scene;
 	sp_camerad cam;

@@ -132,7 +132,7 @@ public:
 	 */
 	virtual void printHelper(std::ostream &os) const {
 		sceneobj<vec_T, color_T, time_T, dim>::printHelper(os);
-		os << " ---> [shape]";
+		os << " ---> [shape. reflectivity: " << reflectivity << "]";
 	}
 };
 

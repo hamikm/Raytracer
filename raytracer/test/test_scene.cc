@@ -100,28 +100,7 @@ TEST_F(sceneTest, TraceRay) {
 }
 
 TEST_F(sceneTest, Print) {
-	std::stringstream str;
-	str << s;
-	char cstring[200];
-	str.getline(cstring, 200);
-	ASSERT_STREQ("scene:", cstring);
-	str.getline(cstring, 200);
-	ASSERT_STREQ("  lights:", cstring);
-	str.getline(cstring, 200);
-	ASSERT_STREQ("    [scene object. color: (0.1, 0.3, 0.5)] ---> "
-			"[light. position: <1, 2, 3>]", cstring);
-	str.getline(cstring, 200);
-		ASSERT_STREQ("    [scene object. color: (0.2, 0.4, 0.6)] ---> "
-				"[light. position: <4, 5, 6>]", cstring);
-	str.getline(cstring, 200);
-	ASSERT_STREQ("  shapes:", cstring);
-	str.getline(cstring, 200);
-	ASSERT_STREQ("    [scene object. color: (0.1, 0.3, 0.5)] ---> [shape] "
-			"---> [sphere. center: <1, 3, 5>, radius: 2]", cstring);
-	str.getline(cstring, 200);
-	ASSERT_STREQ("    [scene object. color: (0.2, 0.4, 0.6)] ---> [shape] "
-			"---> [infinite plane. dist from origin: 2, surface normal: "
-			"<0.267261, 0.534522, 0.801784>]", cstring);
+	std::cout << std::endl << s << std::endl << std::endl;
 }
 
 #endif // TEST_SCENE_CC

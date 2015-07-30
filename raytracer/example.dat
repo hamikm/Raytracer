@@ -12,6 +12,9 @@ light (0.3, 0.3, 0.3) <5.0, 3.0, 5.0>
 sphere (1, 0, 0) 0.5 <-1.2, 0.5, 0.0> 0.5
 sphere (0, 0, 1) 0.5 <1.2, 0.5, 0.0> 0.5
 
+# format for cylinders:: cylinder color radius center axis height reflectivity
+cylinder (0, 1.0, 0) 0.3 <0.0, 0.5, 0.0> <0.0, 1.0, 0.0> 1.0 0.5
+
 # Format for planes is: plane color distance_from_origin surface_normal
 plane  (0.5, 0.0, 0.5) 0 <0.0, 1.0, 0.0> 0.5
 

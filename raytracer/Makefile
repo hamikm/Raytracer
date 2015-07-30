@@ -77,7 +77,7 @@ depend:
 
 src/driver.o: src/sceneobj.hh src/rgbcolor.hh src/mvector.hh src/ray.hh
 src/driver.o: src/scene.hh src/light.hh src/shape.hh src/camera.hh
-src/driver.o: src/infplane.hh src/sphere.hh
+src/driver.o: src/infplane.hh src/sphere.hh src/cylinder.hh
 test/alltests.o: test/test_light.cc src/light.hh src/sceneobj.hh
 test/alltests.o: src/rgbcolor.hh src/mvector.hh src/ray.hh test/test_ray.cc
 test/alltests.o: test/test_mvector.cc test/test_rgbcolor.cc
