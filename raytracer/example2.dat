@@ -1,20 +1,23 @@
 # This is an example scene description file. Follow the format below. There
 # can only be one camera per scene, but there can be any number of lights or
-# shapes like spheres and planes. Comments must begin with a # AND a space. 
+# shapes like spheres and planes. Comments must begin with a # AND a space.
 
 # Format for lights is: light color position
 light (0.8, 0.8, 0.8) <-10.0, 10.0, 5.0>
 light (0.3, 0.3, 0.3) <5.0, 3.0, 5.0>
 
-# format for spheres is: sphere color radius center
-sphere (1, 0, 0) 0.5 <0, 0.5, 0.0> 0.5
+# Format for spheres is: sphere color radius center
+sphere (1, 0, 0) 0.5 <-1.2, 0.5, 0.0> 0.5
 sphere (0, 0, 1) 0.5 <1.2, 0.5, 0.0> 0.5
 
+# Format for cylinders:: cylinder color radius center axis height reflectivity
+cylinder (0, 1.0, 0) 0.3 <0.0, 0.5, 0.0> <0.0, 1.0, 0.0> 1.0 0.5
+
 # Format for planes is: plane color distance_from_origin surface_normal
-plane  (0.9, 0.9, 0.9) 0 <0.0, 0.1, 0.0> 0.15
+plane  (0.5, 0.0, 0.5) 0 <0.0, 1.0, 0.0> 0.5
 
 # Format for cameras is: camera position look_at_this_position up_direction
-camera <-0.45, 0.8, 2.0> <0.3, 0.2, 0> <0.0, 1.0, 0.0>
+camera <-1.5, 1.0, 3.0> <-0.3, 0.5, 0.0> <0.0, 1.0, 0.0>
 
 # The file MUST be terminated by "end" because these data files are 
 # redirected into standard in.

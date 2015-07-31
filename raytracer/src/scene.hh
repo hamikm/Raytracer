@@ -35,6 +35,11 @@
 #define MAX_REFLECT 10
 
 /**
+ * Used to make sure a ray emitted from an object doesn't intersect itself.
+ */
+#define DELTA 0.00001
+
+/**
  * Represents a 3D scene as a collection of shape object pointers and light
  * pointers.
  *
@@ -76,12 +81,19 @@ private:
 	 */
 	std::vector<sp_shape> shapes;
 
+	/**
+	 * Controls if shadows are used in the raytracer or not.
+	 */
+	bool useShadows;
+
 public:
 
 	/**
-	 * Constructs an empty scene.
+	 * Constructs an empty scene with or without shadows.
+	 *
+	 * @param useShadows If true, renders if shadows, if false, not
 	 */
-	scene() { }
+	scene(bool useShadows) : useShadows(useShadows) { }
 
 	/**
 	 * Adds a shape to the scene.
@@ -170,12 +182,31 @@ public:
 			mvector<vec_T, dim> L = currLightPtr->getPos() - intersectionPt;
 			L = L.norm();
 			vec_T LdotN = L * N;
+
+			// A hack to make sure an object doesn't intersect itself...
+			// make the "to light" ray start a little outside an object itself
+			// by adding a tiny scalar multiple of a normal line to the
+			// starting point
+			mvector<vec_T, dim> intersectionPtWithDelta =
+					intersectionPt + N.norm() * DELTA;
+
+			// shoot a ray to this light. if it hits anything on the way,
+			// skip the light (if shadows are on)
+			ray<vec_T, time_T, dim> rayToLight(
+					intersectionPtWithDelta, L);
+			time_T t;
+			if (useShadows && findClosestShape(rayToLight, t) != 0) {
+				continue;
+			}
+
+			// add in the color contribution of the light
 			if(LdotN > 0) {
 				finalColor += (currLightPtr->getColor() *
 						intersectedObjPtr->getColor() * LdotN);
 			}
 		}
 
+		// handle reflections
 		if (intersectedObjPtr->getReflectivity() > 0 && depth < MAX_REFLECT) {
 			// R_r is the direction of the reflected vector
 			ray<vec_T, time_T, dim> R_r = r.reflect(intersectionPt, N);
@@ -222,7 +253,7 @@ public:
 	 *   written.
 	 */
 	void printHelper(std::ostream &os) const {
-		os << "scene:" << std::endl;
+		os << "scene: shadows " << (useShadows ? "ON" : "OFF") << std::endl;
 		os << "  lights:" << std::endl;
 		typename std::vector<sp_light>::const_iterator iter;
 		for (iter = lights.begin(); iter < lights.end(); iter++) {
@@ -258,5 +289,12 @@ typedef scene<float, float, float, 3> scene3f;
 typedef scene<double, double, double, 2> scene2d;
 typedef scene<double, double, float, 2> scene2ddf;
 typedef scene<float, float, float, 2> scene2f;
+
+typedef boost::shared_ptr<scene3d> sp_scene3d;
+typedef boost::shared_ptr<scene3ddf> sp_scene3ddf;
+typedef boost::shared_ptr<scene3f> sp_scene3f;
+typedef boost::shared_ptr<scene3d> sp_scene2d;
+typedef boost::shared_ptr<scene3ddf> sp_scene2ddf;
+typedef boost::shared_ptr<scene3f> sp_scene2f;
 
 #endif // SCENE_HH

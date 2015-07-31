@@ -30,7 +30,7 @@ view: $(IMG_NAME)
 
 # Makes test image. Pipes PPM image to PNG converter, outputs to test image.
 $(IMG_NAME): rt $(TEST_DATA)
-	./rt $(WIDTH) $(HEIGHT) < $(TEST_DATA) | pnmtopng > $(IMG_NAME)
+	./rt $(WIDTH) $(HEIGHT) -s < $(TEST_DATA) | pnmtopng > $(IMG_NAME)
 
 # Makes debugging enabled raytracer binary.
 drt: $(SRC_DIR)/ddriver.o

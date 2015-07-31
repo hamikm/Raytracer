@@ -16,6 +16,7 @@
 #include "boost/shared_ptr.hpp"
 #include <iostream>
 #include <string>
+#include <sstream>
 #include <map>
 #include <stdlib.h>
 
@@ -139,34 +140,58 @@ sp_camerad readCamera(istream &is) {
 map<string, sceneObjInputFunction> readerFuncs;
 
 /**
+ * Prints usage message to stdout.
+ *
+ * @param progname Name of this program.
+ */
+void usage(char *progname) {
+	cout << "---> Usage: " << progname
+			<< ": <width in pixels> <height in pixels> -s" << endl;
+	cout << "---> -s is for shadows and must be the last argument." << endl;
+	cout << "---> It's intended for scene descriptions to be sent in with"
+			<< " redirection like: " << endl
+			<< "       " << progname << " 640 480 < inputfile.dat" << endl;
+	cout << "---> See example.dat for the scene description format."
+			<< endl;
+}
+
+/**
  * This program takes a scene description from @c cin (it's advised to redirect
  * the scene description from a file like @c example.dat) then renders a scene
- * of the given width and height to PPM formatted image. The output is written
- * to cout, so it's advised to pipe the output to @c pnmtopng , which converts
- * PPM images to PNG, then to redirect its output to a file like @c img.png.
- * For example, @code rt 640 480 < example.dat | pnmtopng > img.png @endcode
+ * of the given width and height to PPM formatted image. Shadows can be turned
+ * on with the flag -s, but it must be the last argument to the program. The
+ * output is written to cout so it's advised to pipe the output to @c pnmtopng ,
+ * which converts PPM images to PNG, then to redirect its output to a file like
+ * @c img.png. For example, @code rt 640 480 -s < example.dat | pnmtopng >
+ * img.png @endcode
  */
 int main(int argc, char **argv) {
 
-	if (argc != 3) {
-		cout << "---> Usage: " << argv[0]
-				<< ": <width in pixels> <height in pixels> " << endl;
-		cout << "---> It's intended for scene descriptions to be sent in with"
-				<< " redirection like: " << endl
-				<< "       " << argv[0] << " 640 480 < inputfile.dat" << endl;
-		cout << "---> See example.dat for the scene description format."
-				<< endl;
+	if (argc != 4 && argc != 3) {
+		usage(argv[0]);
 		return 1;
 	}
 	int width = atoi(argv[1]);
 	int height = atoi(argv[2]);
+	bool shadowsOn = false;
+	if(argc == 4) {
+		stringstream ss;
+		ss << argv[3];
+		if(ss.str() == "-s") {
+			shadowsOn = true;
+		}
+		else {
+			usage(argv[0]);
+			return 1;
+		}
+	}
 
 	/* Make the string-readerFunction mappings. */
 	readerFuncs["sphere"] = readSphere;
 	readerFuncs["plane"] = readPlane;
 	readerFuncs["cylinder"] = readCylinder;
 
-	scene3d scene;
+	scene3d scene(shadowsOn);
 	sp_camerad cam;
 	string type;
 

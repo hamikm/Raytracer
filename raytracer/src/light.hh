@@ -101,8 +101,9 @@ public:
 typedef light<double, double, double, 3> lightd;
 typedef light<double, double, float, 3> lightddf;
 typedef light<float, float, float, 3> lightf;
-typedef boost::shared_ptr<light<double, double, double, 3> > sp_lightd;
-typedef boost::shared_ptr<light<double, double, float, 3> > sp_lightddf;
-typedef boost::shared_ptr<light<float, float, float, 3> > sp_lightf;
+
+typedef boost::shared_ptr<lightd> sp_lightd;
+typedef boost::shared_ptr<lightddf> sp_lightddf;
+typedef boost::shared_ptr<lightf> sp_lightf;
 
 #endif // LIGHT_HH

@@ -142,11 +142,11 @@ typedef shape<float, float, float, 3> shape3f;
 typedef shape<double, double, double, 2> shape2d;
 typedef shape<double, double, float, 2> shape2ddf;
 typedef shape<float, float, float, 2> shape2f;
-typedef boost::shared_ptr<shape<double, double, double, 3> > sp_shape3d;
-typedef boost::shared_ptr<shape<double, double, float, 3> > sp_shape3ddf;
-typedef boost::shared_ptr<shape<float, float, float, 3> > sp_shape3f;
-typedef boost::shared_ptr<shape<double, double, double, 2> > sp_shape2d;
-typedef boost::shared_ptr<shape<double, double, float, 2> > sp_shape2ddf;
-typedef boost::shared_ptr<shape<float, float, float, 2> > sp_shape2f;
+typedef boost::shared_ptr<shape3d> sp_shape3d;
+typedef boost::shared_ptr<shape3ddf> sp_shape3ddf;
+typedef boost::shared_ptr<shape3f> sp_shape3f;
+typedef boost::shared_ptr<shape2d> sp_shape2d;
+typedef boost::shared_ptr<shape2ddf> sp_shape2ddf;
+typedef boost::shared_ptr<shape2f> sp_shape2f;
 
 #endif // SHAPE_HH
