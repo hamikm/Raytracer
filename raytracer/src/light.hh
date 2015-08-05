@@ -39,26 +39,30 @@ private:
 public:
 
 	/**
-	 * Constructs a white light at the origin.
+	 * Constructs a white light (of moderate intensity 0.7, 0.7, 0.7) at the
+	 * origin.
 	 */
 	light() :
 		sceneobj<vec_T, color_T, time_T, dim>(
-				rgbcolor<color_T>((color_T)1, (color_T)1, (color_T)1)) {
+				rgbcolor<color_T>((color_T)0.7, (color_T)0.7, (color_T)0.7)) {
 
 		// set position to origin
+		assert(dim > 0);
 		for(int i = 0; i < dim; i++) {
 			pos[i] = 0;
 		}
 	}
 
 	/**
-	 * Constructor a light with the given position and color.
+	 * Constructs a light with the given position and color.
 	 *
 	 * @param color The color of this light.
 	 * @param position The position of this light.
 	 */
-	light(rgbcolor<color_T> color, mvector<vec_T, dim> position) :
-		sceneobj<vec_T, color_T, time_T, dim>(color), pos(position) { }
+	light(const rgbcolor<color_T> &color, const mvector<vec_T, dim> &position) :
+			sceneobj<vec_T, color_T, time_T, dim>(color), pos(position) {
+		assert(dim > 0);
+	}
 
 	/**
 	 * Assignment operator overload. Guards against self-assignment.
@@ -85,6 +89,15 @@ public:
 	 */
 	const mvector<vec_T, dim>& getPos() const {
 		return pos;
+	}
+
+	/**
+	 * Setter for position.
+	 *
+	 * @param other The new light posiiton.
+	 */
+	void setPos(const mvector<vec_T, dim> &other) {
+		pos = other;
 	}
 
 	/**

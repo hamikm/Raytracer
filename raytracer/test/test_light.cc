@@ -39,9 +39,9 @@ protected:
  */
 TEST_F(lightTest, DefaultConstructor) {
 	lightddf c;
-	ASSERT_DOUBLE_EQ(1.0, c.getColor().getR());
-	ASSERT_DOUBLE_EQ(1.0, c.getColor().getG());
-	ASSERT_DOUBLE_EQ(1.0, c.getColor().getB());
+	ASSERT_DOUBLE_EQ(0.7, c.getColor().getR());
+	ASSERT_DOUBLE_EQ(0.7, c.getColor().getG());
+	ASSERT_DOUBLE_EQ(0.7, c.getColor().getB());
 	ASSERT_DOUBLE_EQ(0, c.getPos()[0]);
 	ASSERT_DOUBLE_EQ(0, c.getPos()[1]);
 	ASSERT_DOUBLE_EQ(0, c.getPos()[2]);

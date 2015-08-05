@@ -70,17 +70,19 @@ docs:
 	doxygen
 
 depend:
-	makedepend $(CXX_FLAGS) $(CPP_FLAGS) -Y $(SRC_DIR)/driver.cc \
-	$(TST_DIR)/alltests.cc
+	makedepend $(CXX_FLAGS) $(CPP_FLAGS) -Y -Isrc -Itest \
+	$(SRC_DIR)/driver.cc $(TST_DIR)/alltests.cc
 
 # DO NOT DELETE
 
 src/driver.o: src/sceneobj.hh src/rgbcolor.hh src/mvector.hh src/ray.hh
-src/driver.o: src/scene.hh src/light.hh src/shape.hh src/camera.hh
-src/driver.o: src/infplane.hh src/sphere.hh src/cylinder.hh
+src/driver.o: src/scene.hh src/light.hh src/spotlight.hh src/arealight.hh
+src/driver.o: src/shape.hh src/camera.hh src/infplane.hh src/sphere.hh
+src/driver.o: src/cylinder.hh
 test/alltests.o: test/test_light.cc src/light.hh src/sceneobj.hh
 test/alltests.o: src/rgbcolor.hh src/mvector.hh src/ray.hh test/test_ray.cc
 test/alltests.o: test/test_mvector.cc test/test_rgbcolor.cc
 test/alltests.o: test/test_infplane.cc src/infplane.hh src/shape.hh
 test/alltests.o: test/test_sphere.cc src/sphere.hh test/test_scene.cc
-test/alltests.o: src/scene.hh src/camera.hh
+test/alltests.o: src/scene.hh src/spotlight.hh src/arealight.hh src/camera.hh
+test/alltests.o: test/test_arealight.cc

@@ -6,6 +6,8 @@
 #include "sceneobj.hh"
 #include "ray.hh"
 #include "light.hh"
+#include "spotlight.hh"
+#include "arealight.hh"
 #include "shape.hh"
 #include "camera.hh"
 #include "boost/shared_ptr.hpp"
@@ -40,7 +42,7 @@
 #define DELTA 0.00001
 
 /**
- * Represents a 3D scene as a collection of shape object pointers and light
+ * Represents a 3D scene as a collection of shape pointers and light
  * pointers.
  *
  * @tparam vec_T The type of the vector components. Many arithmetic and
@@ -60,10 +62,17 @@ class scene {
 private:
 
 	/**
-	 * Boost shared pointer typedef for lights. This is generic unlike the
+	 * Boost shared pointer typedef for pointlights. This is generic unlike the
 	 * typedefs in the light header file.
 	 */
 	typedef boost::shared_ptr<light<vec_T, color_T, time_T, dim> > sp_light;
+
+	/**
+	 * Boost shared pointer typedef for spotlights. This is generic unlike the
+	 * typedefs in the spotlight header file.
+	 */
+	typedef boost::shared_ptr<spotlight<vec_T, color_T, time_T, dim> >
+		sp_spotlight;
 
 	/**
 	 * Boost shared pointer typedef for shapes. This is generic unlike the
@@ -72,12 +81,24 @@ private:
 	typedef boost::shared_ptr<shape<vec_T, color_T, time_T, dim> > sp_shape;
 
 	/**
-	 * An STL vector of pointers to all the lights in the scene.
+	 * Boost shared pointer typedef for area lights. This is generic unlike the
+	 * typedefs in the light header file.
 	 */
-	std::vector<sp_light> lights;
+	typedef boost::shared_ptr<arealight<vec_T, color_T, time_T, dim> >
+		sp_arealight;
 
 	/**
-	 * An STL vector of pointers to all the shapes in the scene.
+	 * An STL vector of Boost shared pointers to the point lights in the scene.
+	 */
+	std::vector<sp_light> pointlights;
+
+	/**
+	 * An STL vector of Boost shared pointers to the spotlights in this scene.
+	 */
+	std::vector<sp_spotlight> spotlights;
+
+	/**
+	 * An STL vector of Boost shared pointers to all the shapes in the scene.
 	 */
 	std::vector<sp_shape> shapes;
 
@@ -106,13 +127,42 @@ public:
 	}
 
 	/**
-	 * Adds a light to the scene.
+	 * Adds a point light to the scene.
 	 *
-	 * @param theLight Boose shared pointer to the light to add to this scene.
+	 * @param theLight Boost shared pointer to the point light to add to this
+	 *        scene.
 	 */
-	void addLight(sp_light theLight) {
+	void addPointLight(sp_light theLight) {
 		assert(theLight != 0);
-		lights.push_back(theLight);
+		pointlights.push_back(theLight);
+	}
+
+	/**
+	 * Adds a spot light to the scene.
+	 *
+	 * @param theLight Boost shared pointer to the point light to add to this
+	 *        scene.
+	 */
+	void addSpotLight(sp_spotlight theLight) {
+		assert(theLight != 0);
+		spotlights.push_back(theLight);
+	}
+
+	/**
+	 * Adds an area light to the scene by dumping all the point lights in
+	 * area light approximation into this scene's point light collection.
+	 *
+	 * @param theLight Boost shared pointer to the point light to add to this
+	 *        scene.
+	 */
+	void addAreaLight(sp_arealight theLight) {
+		assert(theLight != 0);
+		typename std::vector<boost::shared_ptr<
+			light<vec_T, color_T, time_T, dim> > >::const_iterator iter;
+		for(iter = theLight->getLights().begin();
+				iter < theLight->getLights().end(); iter++) {
+			addPointLight(*iter);
+		}
 	}
 
 	/**
@@ -155,6 +205,12 @@ public:
 	 * the nearest intersecting object and by combining its color with the
 	 * colors of lights in the scene.
 	 *
+	 * TODO: there is probably a better way to process the non-point lights.
+	 * One way would be to write a virtual function called "bool useLight()"
+	 * in the light class so that we can have just one light vector in this
+	 * class, not one vector for each type of light and one loop for each
+	 * vector. That would be a great improvement!
+	 *
 	 * @param r The ray whose color will be determined.
 	 * @param depth The current reflection depth. The recursion
 	 *
@@ -173,11 +229,11 @@ public:
 		mvector<vec_T, dim> intersectionPt = r.getPointAtT(tIntersect);
 		mvector<vec_T, dim> N = intersectedObjPtr->surfaceNorm(intersectionPt);
 
-		// Loop over all the lights, summing the color contributions from
+		// Loop over all the point lights, summing the color contributions from
 		// each one
 		rgbcolor<color_T> finalColor;
 		typename std::vector<sp_light>::const_iterator iter;
-		for (iter = lights.begin(); iter < lights.end(); iter++) {
+		for (iter = pointlights.begin(); iter < pointlights.end(); iter++) {
 			sp_light currLightPtr = *iter;
 			mvector<vec_T, dim> L = currLightPtr->getPos() - intersectionPt;
 			L = L.norm();
@@ -188,7 +244,48 @@ public:
 			// by adding a tiny scalar multiple of a normal line to the
 			// starting point
 			mvector<vec_T, dim> intersectionPtWithDelta =
-					intersectionPt + N.norm() * DELTA;
+					intersectionPt + N * DELTA;
+
+			// shoot a ray to this light. if it hits anything on the way,
+			// skip the light (if shadows are on)
+			ray<vec_T, time_T, dim> rayToLight(
+					intersectionPtWithDelta, L);
+			time_T t;
+			if (useShadows && findClosestShape(rayToLight, t) != 0) {
+				continue;
+			}
+
+			// add in the color contribution of the light
+			if(LdotN > 0) {
+				finalColor += (currLightPtr->getColor() *
+						intersectedObjPtr->getColor() * LdotN);
+			}
+		}
+
+		// Loop over all the spotlights, summing the color contributions from
+		// each one. Skip the spotlight if the angle between the ray and the
+		// spotlight's direction vector is > the cone angle.
+		typename std::vector<sp_spotlight>::const_iterator iter2;
+		for (iter2 = spotlights.begin(); iter2 < spotlights.end(); iter2++) {
+			sp_spotlight currLightPtr = *iter2;
+			mvector<vec_T, dim> L = currLightPtr->getPos() - intersectionPt;
+			L = L.norm();
+
+			// skip this light if it's outside the spotlight cone
+			float ray_spotlight_angle =
+					acos(currLightPtr->getDir().norm() * -L);
+			if (ray_spotlight_angle > currLightPtr->getAngle()) {
+				continue;
+			}
+
+			vec_T LdotN = L * N;
+
+			// A hack to make sure an object doesn't intersect itself...
+			// make the "to light" ray start a little outside an object itself
+			// by adding a tiny scalar multiple of a normal line to the
+			// starting point
+			mvector<vec_T, dim> intersectionPtWithDelta =
+					intersectionPt + N * DELTA;
 
 			// shoot a ray to this light. if it hits anything on the way,
 			// skip the light (if shadows are on)
@@ -254,10 +351,16 @@ public:
 	 */
 	void printHelper(std::ostream &os) const {
 		os << "scene: shadows " << (useShadows ? "ON" : "OFF") << std::endl;
-		os << "  lights:" << std::endl;
+		os << "  point lights:" << std::endl;
 		typename std::vector<sp_light>::const_iterator iter;
-		for (iter = lights.begin(); iter < lights.end(); iter++) {
+		for (iter = pointlights.begin(); iter < pointlights.end(); iter++) {
 			os << "    " << **iter << std::endl;
+		}
+
+		os << "  spotlights:" << std::endl;
+		typename std::vector<sp_spotlight>::const_iterator iter3;
+		for (iter3 = spotlights.begin(); iter3 < spotlights.end(); iter3++) {
+			os << "    " << **iter3 << std::endl;
 		}
 
 		os << "  shapes:" << std::endl;

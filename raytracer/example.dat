@@ -3,18 +3,31 @@
 # shapes like spheres and planes. Comments must begin with a # AND a space. 
 
 # Format for lights is: light color position
-light (0.8, 0.8, 0.8) <-10.0, 10.0, 5.0>
-light (0.3, 0.3, 0.3) <5.0, 3.0, 5.0>
+light (0.7, 0.7, 0.7) <-10.0, 10.0, 5.0>
+light (0.5, 0.5, 0.5) <10.0, 10.0, 5.0>
+
+# Format for spotlights is: spotlight color position look_at_position angle 
+# spotlight (0.5, 0.5, 0.5) <5.0, 5.0, 3.0> <0.0, 0.0, 0.0> 0.4
+
+# Format for area lights is:
+# arealight color center surface_normal up_direction horizontal_spacing
+# vertical_spacing width height
+
+# arealight (0.9, 0.9, 0.9) <0.0, 2.0, 1.0> <0, -1, 0> <1, 0, 0> 
+# 0.05 0.05 0.7 0.7
 
 # format for spheres is: sphere color radius center
-sphere (1, 0, 0) 0.5 <0, 0.5, 0.0> 0.5
-sphere (0, 0, 1) 0.5 <1.2, 0.5, 0.0> 0.5
+sphere (1, 0, 0) 0.8 <-1.7, 0.8, 1.0> 0.5
+sphere (0, 0, 1) 0.8 <1.7, 0.8, 1.5> 0.5
 
 # Format for planes is: plane color distance_from_origin surface_normal
 plane  (0.9, 0.9, 0.9) 0 <0.0, 0.1, 0.0> 0.15
 
+# Format for cylinders: cylinder color radius center axis height reflectivity
+# cylinder (0, 1.0, 0) 0.3 <0.0, 0.5, 0.0> <0.0, 1.0, 0.0> 1.0 0.5
+
 # Format for cameras is: camera position look_at_this_position up_direction
-camera <-0.45, 0.8, 2.0> <0.3, 0.2, 0> <0.0, 1.0, 0.0>
+camera <-3.0, 2.0, 5.0> <0.0, 0.0, 0.0> <0.0, 1.0, 0.0>
 
 # The file MUST be terminated by "end" because these data files are 
 # redirected into standard in.

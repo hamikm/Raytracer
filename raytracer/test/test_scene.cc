@@ -10,6 +10,7 @@
 #include "sphere.hh"
 #include "light.hh"
 #include "shape.hh"
+#include "arealight.hh"
 #include "infplane.hh"
 #include "gtest/gtest.h"
 #include <iostream>
@@ -30,11 +31,12 @@ protected:
 	sp_scene3d s;
 	sp_lightd a, b;
 	sp_shape3d c, d;
+	arealightd defarealight;
 
 	/**
 	 * Since we're passing pointers to the lights in the scene and pointers
 	 * to the shapes in the scene we have to be careful to preserve the
-	 * underlying objects->.. otherwise their destructors get called at the
+	 * underlying objects otherwise their destructors get called at the
 	 * end of this function.
 	 */
 	virtual void SetUp() {
@@ -62,13 +64,11 @@ protected:
 
 		s->addShape(c);
 		s->addShape(d);
-		s->addLight(a);
-		s->addLight(b);
+		s->addPointLight(a);
+		s->addPointLight(b);
 	}
 
-	virtual void TearDown() {
-
-	}
+	virtual void TearDown() { }
 };
 
 /*
@@ -102,6 +102,7 @@ TEST_F(sceneTest, TraceRay) {
 }
 
 TEST_F(sceneTest, Print) {
+	s->addAreaLight(boost::make_shared<arealightd>(defarealight));
 	std::cout << std::endl << *s << std::endl << std::endl;
 }
 

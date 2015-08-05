@@ -13,6 +13,7 @@
 #include "light.hh"
 #include "shape.hh"
 #include "mvector.hh"
+#include "spotlight.hh"
 #include "boost/shared_ptr.hpp"
 #include <iostream>
 #include <string>
@@ -99,8 +100,8 @@ sp_shape3d readPlane(istream &is) {
 }
 
 /**
- * Reads light data from the given input stream then outputs a Boost shared
- * pointer to a light constructed from that data. Format must be
+ * Reads point light data from the given input stream then outputs a Boost
+ * shared pointer to a light constructed from that data. Format must be
  * @code color position @endcode
  * where @c color is in the format (r, g, b) and @c position is
  * a vector in the format <x, y, z>.
@@ -114,6 +115,55 @@ sp_lightd readLight(istream &is) {
 	vector3d vec;
 	cin >> color >> vec;
 	sp_lightd x(new lightd(color, vec));
+	return x;
+}
+
+/**
+ * Reads spotlight data from the given input stream then outputs a Boost shared
+ * pointer to a spot light constructed from that data. Format must be
+ * @code color position look_at_position angle @endcode
+ * where @c color is in the format (r, g, b), @c position is
+ * a vector in the format <x, y, z>, @c look_at_position is also a vector, and
+ * @c angle is a float describing the cone angle.
+ *
+ * @param is The input stream from which to read.
+ *
+ * @returns A Boost shared pointer to the light.
+ */
+sp_spotlightd readSpotLight(istream &is) {
+	rgbcolord color;
+	vector3d pos, lookat;
+	float angle;
+	cin >> color >> pos >> lookat >> angle;
+	assert(!(pos[0] == lookat[0] &&
+			lookat[1] == lookat[1] && pos[2] == lookat[2]));
+	sp_spotlightd x(new spotlightd(color, pos, (lookat - pos).norm(), angle));
+	return x;
+}
+
+/**
+ * Reads area light data from the given input stream then outputs a Boost
+ * shared pointer to an area light constructed from that data. Format must be
+ * @code color center surface_normal up_direction horizontal_spacing
+ * vertical_spacing width height @endcode
+ * where @c color is in the format (r, g, b), @c center is
+ * a vector in the format <x, y, z>, @c surface_normal is also a vector,
+ * @c up_direction is a vector pointing along the v axis, @c horizontal_spacing
+ * is a double, @c vertical_spacing is a double, @c width is a double, and
+ * @c height is a double.
+ *
+ * @param is The input stream from which to read.
+ *
+ * @returns A Boost shared pointer to the area light.
+ */
+sp_arealightd readAreaLight(istream &is) {
+	rgbcolord color;
+	vector3d center, normal, upDir;
+	double hspace, vspace, width, height;
+	cin >> color >> center >> normal >> upDir >> hspace >> vspace >> width
+		>> height;
+	sp_arealightd x(new arealightd(
+			color, center, normal, upDir, hspace, vspace, width, height));
 	return x;
 }
 
@@ -207,7 +257,19 @@ int main(int argc, char **argv) {
 		else if (type == "light") {
 			sp_lightd light;
 			light = readLight(cin);
-			scene.addLight(light);
+			scene.addPointLight(light);
+		}
+		// Otherwise if it's a spot light...
+		else if (type == "spotlight") {
+			sp_spotlightd slight;
+			slight = readSpotLight(cin);
+			scene.addSpotLight(slight);
+		}
+		// Otherwise if it's an area light...
+		else if (type == "arealight") {
+			sp_arealightd alight;
+			alight = readAreaLight(cin);
+			scene.addAreaLight(alight);
 		}
 		// Otherwise if the type is camera...
 		else if (type == "camera") {
@@ -231,6 +293,10 @@ int main(int argc, char **argv) {
 			return 1;
 		}
 	}
+
+	// TODO
+	//cerr << scene << endl;
+	//return 1;
 
 	/* Render width x height image of this scene. */
 	scene.renderPPM(*cam, width, height, cout);

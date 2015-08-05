@@ -11,6 +11,7 @@
 #include "test_infplane.cc"
 #include "test_sphere.cc"
 #include "test_scene.cc"
+#include "test_arealight.cc"
 
 using namespace testing;
 

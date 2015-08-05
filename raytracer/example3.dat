@@ -1,6 +1,7 @@
-# Format for spotlights is: spotlight color position look_at_position angle 
-spotlight (0.8, 0.8, 0.8) <-5.0, 5.0, 3.0> <0.0, 0.0, 0.0> 0.4
-spotlight (0.6, 0.6, 0.6) <5.0, 5.0, 3.0> <0.0, 0.0, 0.0> 0.4
+# Format for area lights is:
+# arealight color center surface_normal up_direction horizontal_spacing
+# vertical_spacing width height
+arealight (0.9, 0.9, 0.9) <0.0, 2.0, 1.0> <0, -1, 0> <1, 0, 0> 0.05 0.05 0.7 0.7
 
 # Format for spheres is: sphere color radius center
 sphere (1, 0, 0) 0.5 <-1.2, 0.5, 0.0> 0.5
