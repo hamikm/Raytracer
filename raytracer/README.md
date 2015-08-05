@@ -1,6 +1,6 @@
 This is a simple raytracer which uses my own math vector class. It doesn't
 use OpenGL or any other graphics libraries; everything is from scratch just 
-like grandma's cookies! Spheres, planes, cylinders, point lights, spotlights,
+like grandma's cookies*! Spheres, planes, cylinders, point lights, spotlights,
 area lights, reflections, and shadows are currently supported. I originally 
 wrote this as a project for Caltech's CS11 class in summer 2015. Check out the 
 sample image, sample.png, in the root directory. 
@@ -26,3 +26,6 @@ labs.tar.gz. The Google test libraries needed for unit testing are included in
 this repository and are automatically built by the makefile. There is fairly
 good unit test coverage; look at some of the test suites to familiarize
 yourself with the provided classes.
+
+* I know that reinventing the wheel is bad :-). I wrote this to solidify my
+C++ skills and to segue into a graphics course.
