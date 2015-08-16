@@ -294,10 +294,6 @@ int main(int argc, char **argv) {
 		}
 	}
 
-	// TODO
-	//cerr << scene << endl;
-	//return 1;
-
 	/* Render width x height image of this scene. */
 	scene.renderPPM(*cam, width, height, cout);
 
