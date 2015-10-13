@@ -5,7 +5,7 @@ this to practice C++ :-).  Spheres, planes, cylinders, point lights,
 spotlights, area lights, reflections, and shadows are currently supported.
 Check out this sample render:
 
-<img src="sample.png" width="512px" height="360">
+<img src="sample.png" width="512px" height="320">
 
 Also see example.dat in the root directoy for a demonstration of the scene 
 description language which is used to specify the scenes. If you modify this 
