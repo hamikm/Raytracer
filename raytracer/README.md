@@ -5,13 +5,13 @@ this to practice C++ :-).  Spheres, planes, cylinders, point lights,
 spotlights, area lights, reflections, and shadows are currently supported.
 Check out this sample render:
 
-<img src="sample.png" width="512px" height="320">
+![Sample image with area light, reflections, and shadows.](sample.png)
 
 Also see example.dat in the root directoy for a demonstration of the scene 
 description language which is used to specify the scenes. If you modify this 
 file you can then type "make view" to render the new scene. Make sure you have 
-Eye of Gnome and the Boost libraries installed. On Ubuntu you can install them 
-like this by apt-getting eog and libboost-all-dev.
+Eye of Gnome and the Boost libraries installed. On Ubuntu you can install them
+by apt-getting eog and libboost-all-dev.
   
 If you want more control over image dimensions, the file format, and so forth
 type "./rt" and read the output for instructions. All comments are written so
