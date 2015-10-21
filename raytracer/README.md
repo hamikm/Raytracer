@@ -3,7 +3,7 @@ use OpenGL or any other graphics libraries; everything is from scratch just
 like grandma's cookies! I know that reinventing the wheel is bad; I wrote 
 this to practice C++ :-).  Spheres, planes, cylinders, point lights, 
 spotlights, area lights, reflections, and shadows are currently supported.
-Check out this sample render:
+Check out this sample render (and look at GitHub issues for ongoing work):
 
 ![Sample image with area light, reflections, and shadows.](sample.png)
 
