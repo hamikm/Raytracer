@@ -8,7 +8,7 @@ issues for ongoing work):
 
 ![Sample image with area light, reflections, and shadows.](sample.png)
 
-Also see example.dat in the root directoy for a demonstration of the scene 
+Also see `example.dat` in the root directoy for a demonstration of the scene 
 description language which is used to specify the scenes. If you modify this 
 file you can then type `make view` to render the new scene. Make sure you have 
 Eye of Gnome and the Boost libraries installed. On Ubuntu you can install them
