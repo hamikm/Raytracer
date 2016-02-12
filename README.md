@@ -1,6 +1,6 @@
 This is a simple raytracer which uses my own math vector class. It doesn't
 use OpenGL or any other graphics libraries---everything is from scratch! I
-know that reinventing the wheel is bad, but I wrote this to practice C++.
+know that reinventing the wheel is bad but wrote this to practice C++.
 Plus I've always wanted to write my own raytracer :-).  Spheres, planes,
 cylinders, point lights, spotlights, area lights, reflections, and shadows
 are currently supported. Check out this sample render (and look at GitHub
