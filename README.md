@@ -3,7 +3,7 @@ use OpenGL or any fancy libraries---everything is from scratch. I wrote this
 and reinvented the wheel a bit to practice C++ and realize a longstanding
 nerdy dream to write a raytracer.  Spheres, planes, cylinders, point lights,
 spotlights, area lights, reflections, and shadows are supported. Check out
-this sample render:
+this sample render.
 
 ![Sample image with area light, reflections, and shadows.](sample.png)
 
